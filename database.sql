@@ -65,3 +65,9 @@ CREATE TABLE locations (
                            capacity INT NOT NULL,
                            image_url VARCHAR(255)
 )ENGINE=InnoDB;
+
+ALTER TABLE locations
+    ADD COLUMN place_id INT;
+ALTER TABLE locations
+    ADD CONSTRAINT fk_place
+        FOREIGN KEY (place_id) REFERENCES Place(town_id);
