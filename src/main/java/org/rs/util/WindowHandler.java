@@ -46,6 +46,17 @@ public class WindowHandler {
         });
     }
 
+    public static void create_window_pregled_zahtjeva(JFrame oldFrame) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            pregled_zahtjeva pregledZahtjeva = new pregled_zahtjeva(oldFrame);
+            oldFrame.setContentPane(pregledZahtjeva.panel_zahtjevi);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+
     public static void create_window_unesi_mjesto(JFrame oldFrame) {
         SwingUtilities.invokeLater(() -> {
             oldFrame.getContentPane().removeAll();

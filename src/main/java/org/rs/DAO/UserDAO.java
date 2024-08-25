@@ -1,8 +1,6 @@
 package org.rs.DAO;
 
-import org.rs.entity.Location;
-import org.rs.entity.Place;
-import org.rs.entity.User;
+import org.rs.entity.*;
 
 import javax.persistence.*;
 
@@ -53,6 +51,26 @@ public class UserDAO {
         }
     }
 
+    public static void addUserRequest(UserRequest userRequest) {
+        EntityManager em = getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+            em.persist(userRequest);
+            transaction.commit();
+            System.out.println("User request added successfully");
+        } catch (PersistenceException e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            System.err.println("Error adding user request: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
+
     public static void addPlace(Place place) {
         EntityManager em = getEntityManager();
         EntityTransaction transaction = em.getTransaction();
@@ -85,6 +103,19 @@ public class UserDAO {
         }
         return places;
     }
+    public static List<UserRequest> getAllRequests() {
+        EntityManager em = emf.createEntityManager();
+        List<UserRequest> requests = null;
+        try {
+            TypedQuery<UserRequest> query = em.createQuery("SELECT p FROM UserRequest p", UserRequest.class);
+            requests = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle exceptions or use a logging framework
+        } finally {
+            em.close();
+        }
+        return requests;
+    }
     public static void addLocation(Location location) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
@@ -98,6 +129,43 @@ public class UserDAO {
                 transaction.rollback();
             }
             e.printStackTrace(); // Handle exceptions or use a logging framework
+        } finally {
+            em.close();
+        }
+    }
+    public static void approveRequest(UserRequest request) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+
+            // Create a new User based on the Request
+            User user = new User();
+            user.setFullName(request.getFullName());
+            user.setUsername(request.getUsername());
+            user.setPassword(request.getPassword());
+            user.setEmail(request.getEmail());
+            Role role = new Role();
+            role.setRoleName(request.getRoleName());
+            user.setRole(role);
+
+            // Persist the User and remove the Request
+            em.persist(user);
+            em.remove(em.contains(request) ? request : em.merge(request));
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+    public static void rejectRequest(UserRequest request) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            em.remove(em.contains(request) ? request : em.merge(request));
+            em.getTransaction().commit();
         } finally {
             em.close();
         }

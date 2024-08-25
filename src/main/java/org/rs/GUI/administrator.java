@@ -23,6 +23,7 @@ public class administrator {
         PregledZahtjevaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                WindowHandler.create_window_pregled_zahtjeva(oldFrame);
 
             }
         });
