@@ -7,6 +7,6 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        WindowHandler.create_window_login(frame);
+        WindowHandler.create_window_home(frame);
     }
 }

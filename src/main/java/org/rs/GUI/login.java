@@ -42,7 +42,7 @@ public class login {
         registracijaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                WindowHandler.create_window_unesi_korisnika(oldFrame);
+                WindowHandler.create_window_home(oldFrame);
             }
         });
     }
@@ -54,7 +54,7 @@ public class login {
         if(username.isEmpty() || password.isEmpty()){
             JOptionPane.showMessageDialog(null, "Empty field", "Login Error", JOptionPane.WARNING_MESSAGE);
             return;
-        }else if (korisnik.getUsername() == null || korisnik.getPassword() == null){
+        }else if (korisnik == null){
             JOptionPane.showMessageDialog(null, "User not found", "Login Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -62,7 +62,8 @@ public class login {
             case "Administrator":
                 WindowHandler.create_window_admin(oldFrame);
                 break;
-            case "Prodekan":
+            case "Korisnik":
+                WindowHandler.create_window_user(oldFrame, korisnik);
                 break;
             case "Nastavnik":
                 break;

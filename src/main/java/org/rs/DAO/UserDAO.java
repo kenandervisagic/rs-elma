@@ -5,6 +5,7 @@ import org.rs.entity.*;
 import javax.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.rs.util.JpaUtil.getEntityManager;
 
@@ -23,32 +24,13 @@ public class UserDAO {
             query.setParameter("password", password);
 
             user = query.getSingleResult();
-        } catch (Exception e) {
+        } catch (NoResultException e) {
             e.printStackTrace(); // Handle exceptions or use a logging framework
+            return null;
         } finally {
             em.close();
         }
         return user;
-    }
-
-    public static void addUser(User user) {
-        EntityManager em = getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-
-        try {
-            transaction.begin();
-            em.persist(user);
-            transaction.commit();
-            System.out.println("User added successfully");
-        } catch (PersistenceException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            System.err.println("Error adding user: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
     }
 
     public static void addUserRequest(UserRequest userRequest) {
@@ -90,6 +72,7 @@ public class UserDAO {
             em.close();
         }
     }
+
     public static List<Place> getAllPlaces() {
         EntityManager em = emf.createEntityManager();
         List<Place> places = null;
@@ -103,6 +86,7 @@ public class UserDAO {
         }
         return places;
     }
+
     public static List<UserRequest> getAllRequests() {
         EntityManager em = emf.createEntityManager();
         List<UserRequest> requests = null;
@@ -116,6 +100,7 @@ public class UserDAO {
         }
         return requests;
     }
+
     public static void addLocation(Location location) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
@@ -133,6 +118,7 @@ public class UserDAO {
             em.close();
         }
     }
+
     public static void approveRequest(UserRequest request) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
@@ -159,6 +145,7 @@ public class UserDAO {
             em.close();
         }
     }
+
     public static void rejectRequest(UserRequest request) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
@@ -170,4 +157,37 @@ public class UserDAO {
             em.close();
         }
     }
-}
+    public static List<Event> getTop4Events() {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e ORDER BY e.eventDate DESC", Event.class);
+        query.setMaxResults(4);
+        return query.getResultList();
+    }
+
+    public static void addLocationWithSectors(Location location, Set<Sector> sectors) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+            try {
+                transaction.begin();
+
+                // Persist the Location
+                em.persist(location);
+
+                // Persist each Sector, setting the Location reference
+                for (Sector sector : sectors) {
+                    sector.setLocation(location);
+                    em.persist(sector);
+                }
+
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+                throw e;
+            } finally {
+                em.close();
+            }
+        }
+    }

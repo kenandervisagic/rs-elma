@@ -1,11 +1,22 @@
 package org.rs.util;
 
 import org.rs.GUI.*;
+import org.rs.entity.User;
 
 import javax.swing.*;
 
 public class WindowHandler {
 
+    public static void create_window_home(JFrame oldFrame) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            pocetna pocetnaPage = new pocetna(oldFrame);
+            oldFrame.setContentPane(pocetnaPage.pocetnaPanel);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
     public static void create_window_admin(JFrame oldFrame) {
         SwingUtilities.invokeLater(() -> {
             oldFrame.getContentPane().removeAll();
@@ -73,6 +84,27 @@ public class WindowHandler {
             oldFrame.getContentPane().removeAll();
             unesi_lokaciju unesiLokaciju = new unesi_lokaciju(oldFrame);
             oldFrame.setContentPane(unesiLokaciju.unesi_lokaciju);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+
+    public static void create_window_unesi_sektore(JFrame oldFrame) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            unesi_sektor unesiSektor = new unesi_sektor(oldFrame);
+            oldFrame.setContentPane(unesiSektor.unesi_sektor);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+    public static void create_window_user(JFrame oldFrame, User user) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            korisnik userPanel = new korisnik(oldFrame, user);
+            oldFrame.setContentPane(userPanel.userPanel);
             oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             oldFrame.pack();
             oldFrame.setVisible(true);
