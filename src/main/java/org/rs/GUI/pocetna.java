@@ -114,8 +114,8 @@ public class pocetna {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Get selected category and subcategory
-                String selectedCategory = (String) comboBox1.getSelectedItem();
-                String selectedSubCategory = (String) comboBox2.getSelectedItem();
+                selectedCategory = (String) comboBox1.getSelectedItem();
+                selectedSubCategory = (String) comboBox2.getSelectedItem();
 
                 // If "All" is selected, set to null or empty string
                 if ("All".equals(selectedCategory)) {
@@ -124,7 +124,7 @@ public class pocetna {
                 if ("All".equals(selectedSubCategory)) {
                     selectedSubCategory = null;
                 }
-
+                currentPage = 0;
                 // Fetch events based on selected filters
                 List<Event> events = EventDAO.getEventsByFilters(selectedCategory, selectedSubCategory, currentPage, pageSize);
 
@@ -184,6 +184,7 @@ public class pocetna {
         // Fetch events based on the filter criteria and current page
         List<Event> events = EventDAO.getEventsByFilters(selectedCategory, selectedSubCategory, currentPage, pageSize);
 
+        totalEvents = EventDAO.getTotalNumberOfFilteredEvents(selectedCategory, selectedSubCategory);
         // Update the UI with the filtered events
         updateEventDisplay(events);
 

@@ -1,10 +1,8 @@
 package org.rs.DAO;
 
 import org.rs.entity.*;
-import org.rs.util.JpaUtil;
 
 import javax.persistence.*;
-
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +14,7 @@ public class UserDAO {
 
     public static User getUserByUsernameAndPass(String username, String password) {
         EntityManager em = emf.createEntityManager();
-        User user = null;
+        User user;
 
         try {
             String queryStr = "SELECT u FROM User u WHERE u.username = :username AND u.password = :password";
@@ -102,24 +100,6 @@ public class UserDAO {
             em.close();
         }
         return requests;
-    }
-
-    public static void addLocation(Location location) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-
-        try {
-            transaction.begin();
-            em.persist(location);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            e.printStackTrace(); // Handle exceptions or use a logging framework
-        } finally {
-            em.close();
-        }
     }
 
 
