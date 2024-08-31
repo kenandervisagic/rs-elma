@@ -1,25 +1,14 @@
 package org.rs.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class User {
-    public User(String firstName,String username, String email, String password, Role role) {
-        this.fullName = firstName;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -37,7 +26,9 @@ public class User {
     @Column(name = "full_name")
     private String fullName;
 
-    @ManyToOne(cascade = CascadeType.PERSIST) // Add cascade option
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @Column (name = "balance")
+    private Double balance;
+
+    @Column(name = "role")
+    private String role;
 }

@@ -26,9 +26,6 @@ public class Location {
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
-    @Column(name = "image_url")
-    private String type;
-
     @OneToMany(mappedBy = "locationEntity")
     private Set<Event> events;
 

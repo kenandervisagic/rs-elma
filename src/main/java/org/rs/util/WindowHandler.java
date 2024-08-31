@@ -103,8 +103,8 @@ public class WindowHandler {
     public static void create_window_user(JFrame oldFrame, User user) {
         SwingUtilities.invokeLater(() -> {
             oldFrame.getContentPane().removeAll();
-            korisnik userPanel = new korisnik(oldFrame, user);
-            oldFrame.setContentPane(userPanel.userPanel);
+            pocetnaPrijavljenKorisnik userPanel = new pocetnaPrijavljenKorisnik(oldFrame, user);
+            oldFrame.setContentPane(userPanel.pocetnaPanel);
             oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             oldFrame.pack();
             oldFrame.setVisible(true);

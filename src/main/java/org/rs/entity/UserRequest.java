@@ -1,6 +1,5 @@
 package org.rs.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,8 +17,7 @@ public class UserRequest {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.roleName = role;
-
+        this.role = role;
     }
 
     @Id
@@ -40,6 +38,6 @@ public class UserRequest {
     private String email;
 
     @Column(name = "role_name")
-    private String roleName;
+    private String role;
 
 }

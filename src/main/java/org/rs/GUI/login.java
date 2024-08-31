@@ -58,7 +58,7 @@ public class login {
             JOptionPane.showMessageDialog(null, "User not found", "Login Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        switch (korisnik.getRole().getRoleName()) {
+        switch (korisnik.getRole()) {
             case "Administrator":
                 WindowHandler.create_window_admin(oldFrame);
                 break;

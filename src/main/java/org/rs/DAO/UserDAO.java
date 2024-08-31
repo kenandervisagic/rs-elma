@@ -1,6 +1,7 @@
 package org.rs.DAO;
 
 import org.rs.entity.*;
+import org.rs.util.JpaUtil;
 
 import javax.persistence.*;
 
@@ -32,6 +33,7 @@ public class UserDAO {
         }
         return user;
     }
+
 
     public static void addUserRequest(UserRequest userRequest) {
         EntityManager em = getEntityManager();
@@ -87,6 +89,7 @@ public class UserDAO {
         return places;
     }
 
+
     public static List<UserRequest> getAllRequests() {
         EntityManager em = emf.createEntityManager();
         List<UserRequest> requests = null;
@@ -119,6 +122,7 @@ public class UserDAO {
         }
     }
 
+
     public static void approveRequest(UserRequest request) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
@@ -132,9 +136,8 @@ public class UserDAO {
             user.setUsername(request.getUsername());
             user.setPassword(request.getPassword());
             user.setEmail(request.getEmail());
-            Role role = new Role();
-            role.setRoleName(request.getRoleName());
-            user.setRole(role);
+            user.setBalance(0.00);
+            user.setRole(request.getRole());
 
             // Persist the User and remove the Request
             em.persist(user);
@@ -157,37 +160,31 @@ public class UserDAO {
             em.close();
         }
     }
-    public static List<Event> getTop4Events() {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e ORDER BY e.eventDate DESC", Event.class);
-        query.setMaxResults(4);
-        return query.getResultList();
-    }
+
 
     public static void addLocationWithSectors(Location location, Set<Sector> sectors) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
-            try {
-                transaction.begin();
+        try {
+            transaction.begin();
 
-                // Persist the Location
-                em.persist(location);
+            // Persist the Location
+            em.persist(location);
 
-                // Persist each Sector, setting the Location reference
-                for (Sector sector : sectors) {
-                    sector.setLocation(location);
-                    em.persist(sector);
-                }
-
-                transaction.commit();
-            } catch (Exception e) {
-                if (transaction.isActive()) {
-                    transaction.rollback();
-                }
-                throw e;
-            } finally {
-                em.close();
+            // Persist each Sector, setting the Location reference
+            for (Sector sector : sectors) {
+                sector.setLocation(location);
+                em.persist(sector);
             }
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
         }
     }
+}

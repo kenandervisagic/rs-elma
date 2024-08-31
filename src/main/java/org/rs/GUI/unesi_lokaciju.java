@@ -19,7 +19,6 @@ public class unesi_lokaciju {
     public JPanel unesi_lokaciju;
     private JTextField lokacija;
     private JTextField kapacitet;
-    private JTextField tipLokacije;
     private JComboBox comboBox1;
     private JButton unosSektoraButton;
     private JTextField nazivSektora;
@@ -53,10 +52,9 @@ public class unesi_lokaciju {
             public void actionPerformed(ActionEvent actionEvent) {
                 String selectedPlaceName = (String) comboBox1.getSelectedItem();
                 String capacityStr = kapacitet.getText();
-                String locationType = tipLokacije.getText();
 
                 // Validate input
-                if (selectedPlaceName == null || capacityStr.isEmpty() || locationType.isEmpty() || sectors.isEmpty()) {
+                if (selectedPlaceName == null || capacityStr.isEmpty() ||sectors.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please fill in all fields and add at least one sector.");
                     return;
                 }
@@ -83,7 +81,6 @@ public class unesi_lokaciju {
                 // Create new Location object
                 Location newLocation = new Location();
                 newLocation.setCapacity(capacity);
-                newLocation.setType(locationType);
                 newLocation.setPlace(selectedPlace);
                 newLocation.setLocationName(lokacija.getText());
 
@@ -101,7 +98,6 @@ public class unesi_lokaciju {
                 // Clear input fields
                 lokacija.setText("");
                 kapacitet.setText("");
-                tipLokacije.setText("");
                 nazivSektora.setText("");
                 kapacitetSektora.setText("");
                 sectorListModel.clear();  // Clear the sector list display

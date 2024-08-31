@@ -1,8 +1,6 @@
 package org.rs.GUI;
 
 import org.rs.DAO.UserDAO;
-import org.rs.entity.Role;
-import org.rs.entity.User;
 import org.rs.entity.UserRequest;
 import org.rs.util.WindowHandler;
 
@@ -46,10 +44,10 @@ public class unesi_korisnika {
                     return;
                 }
 
+
                 // Create a new user object
-                Role role = new Role();
-                role.setRoleName(korisnikRadioButton.isSelected() ? "Korisnik" : "Organizator");
-                UserRequest userRequest = new UserRequest(name, username, password, email, role.getRoleName());
+                String role = korisnikRadioButton.isSelected() ? "Korisnik" : "Organizator";
+                UserRequest userRequest = new UserRequest(name, username, password, email, role);
 
                 // Save user to the database
                 try {

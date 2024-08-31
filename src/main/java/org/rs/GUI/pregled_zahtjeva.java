@@ -32,7 +32,7 @@ public class pregled_zahtjeva {
         requests = UserDAO.getAllRequests();
 
         for (UserRequest request : requests) {
-            listModel.addElement(request.getId() + ": " + request.getUsername() + " (" + request.getRoleName() + ")");
+            listModel.addElement(request.getId() + ": " + request.getUsername() + " (" + request.getRole() + ")");
         }
 
         nazadButton.addActionListener(new ActionListener() {
