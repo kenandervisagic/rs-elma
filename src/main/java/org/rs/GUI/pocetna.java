@@ -46,11 +46,14 @@ public class pocetna {
     private int currentPage = 0;
     private int pageSize = 4;
     private int totalEvents;
+    private List<Event> displayedEvents;
     private String selectedCategory;
     private String selectedSubCategory;
+    public JFrame oldFrame;
 
 
     public pocetna(JFrame oldFrame) {
+        this.oldFrame = oldFrame;
         DefaultComboBoxModel<String> sortingModel = new DefaultComboBoxModel<>();
         sortingModel.addElement("Naziv");
         sortingModel.addElement("Vrsta");
@@ -148,6 +151,7 @@ public class pocetna {
             }
         });
 
+
         sljedecaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -193,23 +197,37 @@ public class pocetna {
     }
 
     private void updateEventDisplay(List<Event> events) {
-        // Hide all panels initially
+        this.displayedEvents = events;
+
         JPanel[] eventPanels = {event1Panel, event2Panel, event3Panel, event4Panel};
         for (JPanel panel : eventPanels) {
             panel.setVisible(false);
         }
 
-        // Display the events
         JLabel[] eventLabels = {event1Label1, event1Label2, event1Label3,
                 event2Label1, event2Label2, event2Label3,
                 event3Label1, event3Label2, event3Label3,
                 event4Label1, event4Label2, event4Label3};
+
+        JButton[] pregledajButtons = {pregledajButton, pregledajButton1, pregledajButton2, pregledajButton3};
+
         for (int i = 0; i < events.size(); i++) {
             Event event = events.get(i);
-            eventPanels[i].setVisible(true); // Show the panel for the event
-            eventLabels[i * 3].setText(event.getEventName()); // Name
-            eventLabels[i * 3 + 1].setText(event.getLocationEntity().getLocationName()); // Location name
-            eventLabels[i * 3 + 2].setText(event.getEventDate().toString()); // Date
+            eventPanels[i].setVisible(true);
+            eventLabels[i * 3].setText(event.getEventName());
+            eventLabels[i * 3 + 1].setText(event.getLocationEntity().getLocationName());
+            eventLabels[i * 3 + 2].setText(event.getEventDate().toString());
+
+            int finalI = i; // Need to make 'i' final or effectively final to use in lambda
+            pregledajButtons[i].setVisible(true);
+            pregledajButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Event selectedEvent = displayedEvents.get(finalI);
+                    WindowHandler.create_window_pregled_eventa(oldFrame, null, selectedEvent);
+                }
+            });
         }
     }
+
 }

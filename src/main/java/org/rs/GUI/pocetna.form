@@ -264,14 +264,6 @@
                   <text value="Label"/>
                 </properties>
               </component>
-              <component id="c21be" class="javax.swing.JButton" binding="pregledajButton3" default-binding="true">
-                <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Pregledaj"/>
-                </properties>
-              </component>
               <component id="d66df" class="javax.swing.JLabel" binding="event2Label3">
                 <constraints>
                   <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -294,6 +286,14 @@
                 </constraints>
                 <properties>
                   <text value=""/>
+                </properties>
+              </component>
+              <component id="39415" class="javax.swing.JButton" binding="pregledajButton2" default-binding="true">
+                <constraints>
+                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Pregledaj"/>
                 </properties>
               </component>
             </children>
@@ -322,14 +322,6 @@
                 </constraints>
                 <properties>
                   <text value="Label"/>
-                </properties>
-              </component>
-              <component id="39415" class="javax.swing.JButton" binding="pregledajButton2" default-binding="true">
-                <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Pregledaj"/>
                 </properties>
               </component>
               <hspacer id="c0e2">
@@ -364,6 +356,14 @@
                 </constraints>
                 <properties>
                   <text value=""/>
+                </properties>
+              </component>
+              <component id="c21be" class="javax.swing.JButton" binding="pregledajButton3" default-binding="true">
+                <constraints>
+                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Pregledaj"/>
                 </properties>
               </component>
             </children>

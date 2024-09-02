@@ -37,7 +37,6 @@ public class EventDAO {
             event.setSubCategory(eventRequest.getSubCategory());
             event.setEventName(eventRequest.getEventName());
             event.setDescription(eventRequest.getDescription());
-            event.setLocation(eventRequest.getLocation());
             event.setEventDate(eventRequest.getEventDate());
             event.setEventTime(eventRequest.getEventTime());
             event.setMaxTickets(eventRequest.getMaxTickets());

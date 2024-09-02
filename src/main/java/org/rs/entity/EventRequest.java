@@ -34,9 +34,6 @@ public class EventRequest{
     @Column(name = "description")
     private String description;
 
-    @Column(name = "location", nullable = false)
-    private String location;
-
     @Column(name = "event_date", nullable = false)
     private LocalDate eventDate;
 

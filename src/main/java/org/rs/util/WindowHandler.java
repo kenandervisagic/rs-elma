@@ -1,6 +1,7 @@
 package org.rs.util;
 
 import org.rs.GUI.*;
+import org.rs.entity.Event;
 import org.rs.entity.User;
 
 import javax.swing.*;
@@ -108,6 +109,17 @@ public class WindowHandler {
             oldFrame.getContentPane().removeAll();
             pocetnaPrijavljenKorisnik userPanel = new pocetnaPrijavljenKorisnik(oldFrame, user);
             oldFrame.setContentPane(userPanel.pocetnaPanel);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+
+    public static void create_window_pregled_eventa(JFrame oldFrame, User user, Event event) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            pregledEventa pregledEventa = new pregledEventa(oldFrame, user, event);
+            oldFrame.setContentPane(pregledEventa.panel_login);
             oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             oldFrame.pack();
             oldFrame.setVisible(true);
