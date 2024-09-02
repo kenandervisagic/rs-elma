@@ -12,6 +12,7 @@ public class administrator {
     private JButton nazadButton;
     public JPanel admin_panel;
     private JButton unosMjestaButton;
+    private JButton pregledZahtjevaEventa;
 
     public administrator(JFrame oldFrame) {
         nazadButton.addActionListener(new ActionListener() {
@@ -25,6 +26,12 @@ public class administrator {
             public void actionPerformed(ActionEvent actionEvent) {
                 WindowHandler.create_window_pregled_zahtjeva(oldFrame);
 
+            }
+        });
+        pregledZahtjevaEventa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+            WindowHandler.create_window_pregled_zahtjeva_eventa(oldFrame);
             }
         });
         unesiLokacijuButton.addActionListener(new ActionListener() {

@@ -1,5 +1,6 @@
 package org.rs.GUI;
 
+import org.rs.DAO.PlaceDAO;
 import org.rs.DAO.UserDAO;
 import org.rs.entity.Location;
 import org.rs.entity.Place;
@@ -28,7 +29,7 @@ public class unesi_lokaciju {
     private DefaultListModel<String> sectorListModel = new DefaultListModel<>();
 
     public unesi_lokaciju(JFrame oldFrame) {
-        List<Place> places = UserDAO.getAllPlaces();
+        List<Place> places = PlaceDAO.getAllPlaces();
 
         // Populate JComboBox with place names
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();

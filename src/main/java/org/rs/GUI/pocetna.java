@@ -5,7 +5,6 @@ import org.rs.entity.Event;
 import org.rs.entity.EventCategory;
 import org.rs.entity.EventSubCategory;
 import org.rs.util.WindowHandler;
-import org.rs.DAO.UserDAO;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

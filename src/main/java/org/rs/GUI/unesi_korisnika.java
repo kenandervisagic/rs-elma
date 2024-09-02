@@ -1,6 +1,7 @@
 package org.rs.GUI;
 
 import org.rs.DAO.UserDAO;
+import org.rs.entity.User;
 import org.rs.entity.UserRequest;
 import org.rs.util.WindowHandler;
 
@@ -43,7 +44,6 @@ public class unesi_korisnika {
                     JOptionPane.showMessageDialog(null, "Please fill in all fields.");
                     return;
                 }
-
 
                 // Create a new user object
                 String role = korisnikRadioButton.isSelected() ? "Korisnik" : "Organizator";

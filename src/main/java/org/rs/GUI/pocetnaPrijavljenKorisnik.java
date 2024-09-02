@@ -54,7 +54,7 @@ public class pocetnaPrijavljenKorisnik {
         odjavaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                WindowHandler.create_window_unesi_korisnika(oldFrame);
+                WindowHandler.create_window_login(oldFrame);
 
             }
         });

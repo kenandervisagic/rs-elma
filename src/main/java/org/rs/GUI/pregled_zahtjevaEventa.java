@@ -1,8 +1,8 @@
 package org.rs.GUI;
 
 
-import org.rs.DAO.UserDAO;
-import org.rs.entity.UserRequest;
+import org.rs.DAO.EventDAO;
+import org.rs.entity.EventRequest;
 import org.rs.util.WindowHandler;
 
 import javax.swing.*;
@@ -12,26 +12,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class pregled_zahtjeva {
+public class pregled_zahtjevaEventa {
     private JList<String> list1;
     private JButton odbijButton;
     private JButton prihvatiButton;
     private JButton nazadButton;
     public JPanel panel_zahtjevi;
-    private List<UserRequest> requests;
-    private UserRequest selectedRequest;
+    private List<EventRequest> requests;
+    private EventRequest selectedRequest;
     private int selectedIndex;
 
-    public pregled_zahtjeva(JFrame oldFrame) {
-        requests = UserDAO.getAllRequests();
+    public pregled_zahtjevaEventa(JFrame oldFrame) {
 
+        requests = EventDAO.getAllEventRequest();
         DefaultListModel<String> listModel = new DefaultListModel<>();
-
-
-        for (UserRequest request : requests) {
-            listModel.addElement(request.getId() + ": " + request.getUsername() + " (" + request.getRole() + ")");
+        for (EventRequest request : requests) {
+            listModel.addElement(request.toString());
         }
-
         list1.setModel(listModel); // Ensure the JList uses the DefaultListModel
 
         nazadButton.addActionListener(new ActionListener() {
@@ -44,7 +41,7 @@ public class pregled_zahtjeva {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (selectedRequest != null) {
-                    UserDAO.rejectRequest(selectedRequest);
+                    EventDAO.rejectRequest(selectedRequest);
                     listModel.remove(selectedIndex); // Remove the selected item from the list
                     selectedRequest = null;
                 }
@@ -54,7 +51,7 @@ public class pregled_zahtjeva {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (selectedRequest != null) {
-                    UserDAO.approveRequest(selectedRequest);
+                    EventDAO.approveRequest(selectedRequest);
                     listModel.remove(selectedIndex); // Remove the selected item from the list
                     selectedRequest = null;
                 }

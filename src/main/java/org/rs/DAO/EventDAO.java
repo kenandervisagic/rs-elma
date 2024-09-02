@@ -1,8 +1,6 @@
 package org.rs.DAO;
 
-import org.rs.entity.Event;
-import org.rs.entity.EventCategory;
-import org.rs.entity.EventSubCategory;
+import org.rs.entity.*;
 import org.rs.util.JpaUtil;
 
 import javax.persistence.*;
@@ -20,6 +18,48 @@ public class EventDAO {
             return query.getSingleResult();
         } catch (NoResultException e) {
             return null; // Handle no result case
+        } finally {
+            em.close();
+        }
+    }
+
+    public static void approveRequest(EventRequest eventRequest) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+
+            // Create a new User based on the Request
+            Event event = new Event();
+            event.setOrganizer(eventRequest.getOrganizer());
+            event.setCategory(eventRequest.getCategory());
+            event.setSubCategory(eventRequest.getSubCategory());
+            event.setEventName(eventRequest.getEventName());
+            event.setDescription(eventRequest.getDescription());
+            event.setLocation(eventRequest.getLocation());
+            event.setEventDate(eventRequest.getEventDate());
+            event.setEventTime(eventRequest.getEventTime());
+            event.setMaxTickets(eventRequest.getMaxTickets());
+            event.setLocationEntity(eventRequest.getLocationEntity());
+            event.setTickets(eventRequest.getTickets());
+
+            em.persist(event);
+            em.remove(em.contains(eventRequest) ? eventRequest : em.merge(eventRequest));
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    public static void rejectRequest(EventRequest request) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            em.remove(em.contains(request) ? request : em.merge(request));
+            em.getTransaction().commit();
         } finally {
             em.close();
         }
@@ -116,6 +156,20 @@ public class EventDAO {
         return categories;
     }
 
+    public static List<EventRequest> getAllEventRequest() {
+        EntityManager em = emf.createEntityManager();
+        List<EventRequest> requests = null;
+        try {
+            TypedQuery<EventRequest> query = em.createQuery("SELECT c FROM EventRequest c", EventRequest.class);
+            requests = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle exceptions or use a logging framework
+        } finally {
+            em.close();
+        }
+        return requests;
+    }
+
     public static List<EventSubCategory> getSubCategoriesByCategory(String categoryName) {
         EntityManager em = emf.createEntityManager();
         List<EventSubCategory> subCategories = null;
@@ -168,6 +222,7 @@ public class EventDAO {
         query.setMaxResults(4);
         return query.getResultList();
     }
+
     public static List<Event> searchEventsByCriterion(String criterion, String value, int page, int size) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
