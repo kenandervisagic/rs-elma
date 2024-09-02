@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class pregled_zahtjevaEventa {
+public class ReviewEventRequestsPanel {
     private JList<String> list1;
     private JButton odbijButton;
     private JButton prihvatiButton;
@@ -22,7 +22,7 @@ public class pregled_zahtjevaEventa {
     private EventRequest selectedRequest;
     private int selectedIndex;
 
-    public pregled_zahtjevaEventa(JFrame oldFrame) {
+    public ReviewEventRequestsPanel(JFrame oldFrame) {
 
         requests = EventDAO.getAllEventRequest();
         DefaultListModel<String> listModel = new DefaultListModel<>();

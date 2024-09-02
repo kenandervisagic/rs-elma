@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class unesi_lokaciju {
+public class LocationInputPanel {
     private JButton nazadButton;
     private JButton potvrdiButton;
     public JPanel unesi_lokaciju;
@@ -28,7 +28,7 @@ public class unesi_lokaciju {
     private Set<Sector> sectors = new HashSet<>();
     private DefaultListModel<String> sectorListModel = new DefaultListModel<>();
 
-    public unesi_lokaciju(JFrame oldFrame) {
+    public LocationInputPanel(JFrame oldFrame) {
         List<Place> places = PlaceDAO.getAllPlaces();
 
         // Populate JComboBox with place names

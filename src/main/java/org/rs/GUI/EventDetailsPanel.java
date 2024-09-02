@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 
-public class pregledEventa {
+public class EventDetailsPanel {
     public JPanel panel_login;
     private JButton kupiButton;
     private JButton rezervisiButton;
@@ -27,7 +27,7 @@ public class pregledEventa {
     public User user;
     public Event event;
 
-    public pregledEventa(JFrame oldFrame, User user, Event event) {
+    public EventDetailsPanel(JFrame oldFrame, User user, Event event) {
 
         this.event = event;
         this.user = user;

@@ -1,7 +1,6 @@
 package org.rs.GUI;
 
 import org.rs.DAO.PlaceDAO;
-import org.rs.DAO.UserDAO;
 import org.rs.entity.Place;
 import org.rs.util.WindowHandler;
 
@@ -10,14 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class unesi_mjesto {
+public class PlaceInputPanel {
     private JTextField textField1;
     private JButton nazadButton;
     private JButton potvrdiButton;
     public JPanel unesi_mjesto;
     private JList list1;
 
-    public unesi_mjesto(JFrame oldFrame) {
+    public PlaceInputPanel(JFrame oldFrame) {
         loadPlaces();
 
         nazadButton.addActionListener(new ActionListener() {

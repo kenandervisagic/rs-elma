@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class pocetna {
+public class HomePanel {
     private JButton prijavaButton;
     private JButton registracijaButton;
     private JTextField textField1;
@@ -52,7 +52,7 @@ public class pocetna {
     public JFrame oldFrame;
 
 
-    public pocetna(JFrame oldFrame) {
+    public HomePanel(JFrame oldFrame) {
         this.oldFrame = oldFrame;
         DefaultComboBoxModel<String> sortingModel = new DefaultComboBoxModel<>();
         sortingModel.addElement("Naziv");

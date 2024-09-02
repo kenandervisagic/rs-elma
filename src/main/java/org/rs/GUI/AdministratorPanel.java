@@ -1,22 +1,20 @@
 package org.rs.GUI;
 
-import org.rs.entity.User;
-import org.rs.util.WindowHandler;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class korisnik {
+import org.rs.util.WindowHandler;
+
+public class AdministratorPanel {
     private JButton unesiLokacijuButton;
     private JButton PregledZahtjevaButton;
     private JButton nazadButton;
-    public JPanel userPanel;
-    private JButton pregledDogadjajaButton;
-    private User user;
+    public JPanel admin_panel;
+    private JButton unosMjestaButton;
+    private JButton pregledZahtjevaEventa;
 
-    public korisnik(JFrame oldFrame, User user) {
-        this.user = user;
+    public AdministratorPanel(JFrame oldFrame) {
         nazadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -30,13 +28,19 @@ public class korisnik {
 
             }
         });
+        pregledZahtjevaEventa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+            WindowHandler.create_window_pregled_zahtjeva_eventa(oldFrame);
+            }
+        });
         unesiLokacijuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 WindowHandler.create_window_unesi_lokaciju(oldFrame);
             }
         });
-        pregledDogadjajaButton.addActionListener(new ActionListener() {
+        unosMjestaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                WindowHandler.create_window_unesi_mjesto(oldFrame);

@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class pregled_zahtjeva {
+public class ReviewUserRequestsPanel {
     private JList<String> list1;
     private JButton odbijButton;
     private JButton prihvatiButton;
@@ -22,7 +22,7 @@ public class pregled_zahtjeva {
     private UserRequest selectedRequest;
     private int selectedIndex;
 
-    public pregled_zahtjeva(JFrame oldFrame) {
+    public ReviewUserRequestsPanel(JFrame oldFrame) {
         requests = UserDAO.getAllRequests();
 
         DefaultListModel<String> listModel = new DefaultListModel<>();

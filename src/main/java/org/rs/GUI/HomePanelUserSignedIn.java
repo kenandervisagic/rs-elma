@@ -1,7 +1,6 @@
 package org.rs.GUI;
 
 import org.rs.DAO.EventDAO;
-import org.rs.DAO.UserDAO;
 import org.rs.entity.Event;
 import org.rs.entity.User;
 import org.rs.util.WindowHandler;
@@ -11,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class pocetnaPrijavljenKorisnik {
+public class HomePanelUserSignedIn {
     private JButton korpaButton;
     private JButton odjavaButton;
     private JTextField textField1;
@@ -41,7 +40,7 @@ public class pocetnaPrijavljenKorisnik {
     private JLabel balanceLabel;
     public User user;
 
-    public pocetnaPrijavljenKorisnik(JFrame oldFrame, User user) {
+    public HomePanelUserSignedIn(JFrame oldFrame, User user) {
         this.user = user;
         welcomeLabel.setText("Dobrodosli " + user.getFullName());
         balanceLabel.setText("Balance: " + user.getBalance() + "KM");

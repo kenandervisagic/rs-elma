@@ -9,7 +9,7 @@ import org.rs.DAO.UserDAO;
 import org.rs.util.WindowHandler;
 
 
-public class login {
+public class LoginPanel {
     private JTextField textField1;
     public JPanel panel_login;
     private JButton prijaviSeButton;
@@ -24,7 +24,7 @@ public class login {
         return textField1;
     }
 
-    public login(JFrame oldFrame) {
+    public LoginPanel(JFrame oldFrame) {
 
     prijaviSeButton.addActionListener(new ActionListener() {
         @Override

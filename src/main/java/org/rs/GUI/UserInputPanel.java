@@ -1,7 +1,6 @@
 package org.rs.GUI;
 
 import org.rs.DAO.UserDAO;
-import org.rs.entity.User;
 import org.rs.entity.UserRequest;
 import org.rs.util.WindowHandler;
 
@@ -9,7 +8,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class unesi_korisnika {
+public class UserInputPanel {
     private JButton nazadButton;
     private JButton potvrdiButton;
     public JPanel unesi_korisnika;
@@ -20,7 +19,7 @@ public class unesi_korisnika {
     private JTextField imePrezime;
     private JTextField email;
 
-    public unesi_korisnika(JFrame oldFrame) {
+    public UserInputPanel(JFrame oldFrame) {
         ButtonGroup role = new ButtonGroup();
         role.add(korisnikRadioButton);
         role.add(organizatorRadioButton);
@@ -35,9 +34,9 @@ public class unesi_korisnika {
             public void actionPerformed(ActionEvent actionEvent) {
                 // Get user input
                 String name = imePrezime.getText();
-                String username = unesi_korisnika.this.username.getText();
+                String username = UserInputPanel.this.username.getText();
                 String password = new String(passwordField1.getPassword());
-                String email = unesi_korisnika.this.email.getText();
+                String email = UserInputPanel.this.email.getText();
 
                 // Validate inputs
                 if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
