@@ -32,12 +32,15 @@ public class Ticket {
     @Column(name = "cancellation_policy")
     private String cancellationPolicy;
 
+    @Column(name = "seat_number")
+    private Integer seatNumber;
+
     @ManyToOne
     @JoinColumn(name = "sector_id")
     private Sector sector;
 
     @Column (name = "ticket_status")
-    private Integer status; //0-purchased 1-reservation 2-in cart
+    private Integer status; //0-purchased 1-reservation 2-in cart 3 - available
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)

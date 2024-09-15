@@ -2,6 +2,7 @@ package org.rs.util;
 
 import org.rs.GUI.*;
 import org.rs.entity.Event;
+import org.rs.entity.EventRequest;
 import org.rs.entity.User;
 
 import javax.swing.*;
@@ -56,6 +57,17 @@ public class WindowHandler {
         SwingUtilities.invokeLater(() -> {
             oldFrame.getContentPane().removeAll();
             ReviewUserRequestsPanel pregledZahtjeva = new ReviewUserRequestsPanel(oldFrame);
+            oldFrame.setContentPane(pregledZahtjeva.panel_zahtjevi);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+
+    public static void create_window_pregled_zahtjeva_org(User user, JFrame oldFrame) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            ReviewEventRequestsOrgPanel pregledZahtjeva = new ReviewEventRequestsOrgPanel(user, oldFrame);
             oldFrame.setContentPane(pregledZahtjeva.panel_zahtjevi);
             oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             oldFrame.pack();
@@ -138,11 +150,22 @@ public class WindowHandler {
             oldFrame.setVisible(true);
         });
     }
-    public static void create_window_unesi_događaj(User user, JFrame oldFrame) {
+    public static void create_window_unesi_događaj(User user, JFrame oldFrame, EventRequest selectedRequest) {
         SwingUtilities.invokeLater(() -> {
             oldFrame.getContentPane().removeAll();
-            EventInputPanel eventInputPanel = new EventInputPanel(user, oldFrame);
+            EventInputPanel eventInputPanel = new EventInputPanel(user, oldFrame, selectedRequest);
             oldFrame.setContentPane(eventInputPanel.unesi_lokaciju);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+
+    public static void create_window_unesi_karte(User user, JFrame oldFrame, EventRequest selectedRequest) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            TicketCreatePanel ticketCreatePanel = new TicketCreatePanel(user,oldFrame,selectedRequest);
+            oldFrame.setContentPane(ticketCreatePanel.unesi_korisnika);
             oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             oldFrame.pack();
             oldFrame.setVisible(true);

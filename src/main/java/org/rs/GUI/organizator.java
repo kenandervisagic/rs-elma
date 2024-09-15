@@ -26,13 +26,19 @@ public class organizator {
         unosDogađajaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                WindowHandler.create_window_unesi_događaj(user, oldFrame);
+                WindowHandler.create_window_unesi_događaj(user, oldFrame, null);
             }
         });
         pregledDogađajaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 WindowHandler.create_window_unesi_mjesto(oldFrame);
+            }
+        });
+        PregledZahtjevaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WindowHandler.create_window_pregled_zahtjeva_org(user, oldFrame);
             }
         });
     }

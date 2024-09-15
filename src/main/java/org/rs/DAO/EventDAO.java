@@ -49,6 +49,22 @@ public class EventDAO {
         return isSuccess;
     }
 
+    public static boolean updateEventRequest(EventRequest event) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(event); // Use merge to update an existing entity
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
     public Event findEventById(Long id) {
         EntityManager em = emf.createEntityManager();
         Event event = em.find(Event.class, id);
