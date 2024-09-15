@@ -65,9 +65,8 @@ public class LoginPanel {
             case "Korisnik":
                 WindowHandler.create_window_user(oldFrame, korisnik);
                 break;
-            case "Nastavnik":
-                break;
-            case "Student":
+            case "Organizator":
+                WindowHandler.create_window_organizer(korisnik, oldFrame);
                 break;
             default:
                 JOptionPane.showMessageDialog(oldFrame, "Invalid role", "Login Error", JOptionPane.ERROR_MESSAGE);

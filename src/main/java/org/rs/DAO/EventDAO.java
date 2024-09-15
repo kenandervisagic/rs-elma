@@ -22,6 +22,102 @@ public class EventDAO {
             em.close();
         }
     }
+    public static boolean saveEventRequest(EventRequest event) {
+        EntityManager em = null;
+        EntityTransaction transaction = null;
+        boolean isSuccess = false;
+        try {
+            em = emf.createEntityManager();
+            transaction = em.getTransaction();
+            transaction.begin();
+
+            em.persist(event);
+            transaction.commit();
+
+            isSuccess = true; // Operation was successful
+        } catch (PersistenceException e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback(); // Rollback the transaction in case of an error
+            }
+            e.printStackTrace(); // Log or handle the exception as needed
+        } finally {
+            if (em != null) {
+                em.close(); // Ensure EntityManager is closed
+            }
+        }
+
+        return isSuccess;
+    }
+
+    public Event findEventById(Long id) {
+        EntityManager em = emf.createEntityManager();
+        Event event = em.find(Event.class, id);
+        em.close();
+        return event;
+    }
+
+    public Event findEventByName(String name) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Event> eventName = em.createQuery("SELECT e FROM Event e WHERE e.eventName = :name", Event.class).
+                    setParameter("name", name).
+                    getResultList();
+            return eventName.isEmpty() ? null : eventName.get(0);
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Event> findEventsByOrganizer(Long organizerId) {
+        EntityManager em = emf.createEntityManager();
+        List<Event> eventOrganizers = em.createQuery("SELECT e FROM Event e WHERE e.organizer.id = :organizerId", Event.class)
+                .setParameter("organizerId", organizerId)
+                .getResultList();
+        em.close();
+        return eventOrganizers;
+    }
+
+    public List<Event> findAllEvents() {
+        EntityManager em = emf.createEntityManager();
+        List<Event> allEvents = em.createQuery("SELECT e FROM Event e", Event.class).getResultList();
+        em.close();
+        return allEvents;
+    }
+
+    public List<Event> findAllEventsByOrganizer(EventOrganizer organizer) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            // Pretpostavka: Organizator ima identifikator (npr. id) koji povezuje događaje sa organizatorom
+            List<Event> allEventOrganizers = em.createQuery("SELECT e FROM Event e WHERE e.id = :id", Event.class).
+                    setParameter("id", organizer.getId()).
+                    getResultList();
+            return allEventOrganizers;
+        } finally {
+            em.close();
+        }
+    }
+
+    public void updateEvent(Event event) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(event);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void deleteEvent(Long id) {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        Event event = em.find(Event.class, id);
+        if (event != null) {
+            em.remove(event);
+        }
+        em.getTransaction().commit();
+        em.close();
+    }
 
     public static void approveRequest(EventRequest eventRequest) {
         EntityManager em = emf.createEntityManager();

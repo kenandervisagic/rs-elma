@@ -106,6 +106,29 @@ public class UserDAO {
         }
     }
 
+    public static void changeBalance(User user, double newBalance) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+
+            // Find the user by ID
+            User managedUser = em.find(User.class, user.getId());
+            if (managedUser != null) {
+                // Update the balance
+                managedUser.setBalance(user.getBalance() - newBalance);
+
+                // Merge changes to the database
+                em.merge(managedUser);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback(); // Rollback the transaction in case of error
+            }
+            e.printStackTrace();
+        }
+    }
 
     public static void addLocationWithSectors(Location location, Set<Sector> sectors) {
         EntityManager em = emf.createEntityManager();

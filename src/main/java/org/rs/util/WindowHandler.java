@@ -39,14 +39,6 @@ public class WindowHandler {
             oldFrame.pack();
             oldFrame.setVisible(true);
         });
-        SwingUtilities.invokeLater(() -> {
-            oldFrame.getContentPane().removeAll();
-            LoginPanel loginPanelForm = new LoginPanel(oldFrame);
-            oldFrame.setContentPane(loginPanelForm.panel_login);
-            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            oldFrame.pack();
-            oldFrame.setVisible(true);
-        });
     }
 
     public static void create_window_unesi_korisnika(JFrame oldFrame) {
@@ -115,11 +107,42 @@ public class WindowHandler {
         });
     }
 
+    public static void create_window_korpa(JFrame oldFrame, User user) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            KorpaPanel korpaPanel = new KorpaPanel(oldFrame,user);
+            oldFrame.setContentPane(korpaPanel.pocetnaPanel);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+
     public static void create_window_pregled_eventa(JFrame oldFrame, User user, Event event) {
         SwingUtilities.invokeLater(() -> {
             oldFrame.getContentPane().removeAll();
             EventDetailsPanel EventDetailsPanel = new EventDetailsPanel(oldFrame, user, event);
             oldFrame.setContentPane(EventDetailsPanel.panel_login);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+    public static void create_window_organizer(User user, JFrame oldFrame) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            organizator organizator = new organizator(user, oldFrame);
+            oldFrame.setContentPane(organizator.organizator_panel);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+    public static void create_window_unesi_događaj(User user, JFrame oldFrame) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            EventInputPanel eventInputPanel = new EventInputPanel(user, oldFrame);
+            oldFrame.setContentPane(eventInputPanel.unesi_lokaciju);
             oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             oldFrame.pack();
             oldFrame.setVisible(true);

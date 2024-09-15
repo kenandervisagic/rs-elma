@@ -20,9 +20,6 @@ public class Ticket {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @Column(name = "seat_location")
-    private String seatLocation;
-
     @Column(name = "price", nullable = false)
     private Double price;
 
@@ -35,10 +32,14 @@ public class Ticket {
     @Column(name = "cancellation_policy")
     private String cancellationPolicy;
 
-    @Column(name = "max_purchase_per_user")
-    private Integer maxPurchasePerUser;
-
     @ManyToOne
     @JoinColumn(name = "sector_id")
     private Sector sector;
+
+    @Column (name = "ticket_status")
+    private Integer status; //0-purchased 1-reservation 2-in cart
+
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable = false)
+    private User user;
 }

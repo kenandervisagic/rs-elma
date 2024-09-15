@@ -38,4 +38,5 @@ public class Reservation {
 
     @Column(name = "pdf_ticket_url")
     private String pdfTicketUrl;
+
 }

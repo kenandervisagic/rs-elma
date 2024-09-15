@@ -26,7 +26,7 @@ public class UserInputPanel {
         nazadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                WindowHandler.create_window_login(oldFrame);
+                WindowHandler.create_window_home(oldFrame);
             }
         });
         potvrdiButton.addActionListener(new ActionListener() {
