@@ -128,10 +128,28 @@ public class EventInputPanel {
                 String selectedCategory = (String) comboBox1.getSelectedItem();
                 String selectedSubCategory = (String) comboBox2.getSelectedItem();
                 String selectedLocationName = (String) comboBox3.getSelectedItem();
-                int capacity = 100;
+                Location location = LocationDAO.getLocationByName(selectedLocationName);
+
+                if (location == null) {
+                    JOptionPane.showMessageDialog(null, "Please select a valid location.");
+                    return;
+                }
+
+                // Fetch selected sectors
+                List<Sector> sectors = SectorDAO.getSectorsForLocation(location.getId());
+                int totalCapacity = 0;
+                for (int i = 0; i < sectors.size(); i++) {
+                    if (checkboxes[i].isSelected()) {
+                        totalCapacity += sectors.get(i).getCapacity();
+                    }
+                }
+
+                if (totalCapacity <= 0) {
+                    JOptionPane.showMessageDialog(null, "Please select at least one sector.");
+                    return;
+                }
 
                 // Fetch category and subcategory entities
-                Location location = LocationDAO.getLocationByName(selectedLocationName);
                 EventCategory category1 = EventDAO.getCategoryByName(selectedCategory);
                 EventSubCategory subCategory1 = EventDAO.getSubCategoryByName(selectedSubCategory);
 
@@ -153,7 +171,7 @@ public class EventInputPanel {
                     event.setDescription(description);
                     event.setEventDate(eventDate);
                     event.setEventTime(eventTime);
-                    event.setMaxTickets(capacity);
+                    event.setMaxTickets(totalCapacity);
                     event.setCategory(category1);
                     event.setSubCategory(subCategory1);
                     event.setLocationEntity(location);
@@ -176,7 +194,7 @@ public class EventInputPanel {
                     selectedRequest.setDescription(description);
                     selectedRequest.setEventDate(eventDate);
                     selectedRequest.setEventTime(eventTime);
-                    selectedRequest.setMaxTickets(capacity);
+                    selectedRequest.setMaxTickets(totalCapacity);
                     selectedRequest.setCategory(category1);
                     selectedRequest.setSubCategory(subCategory1);
                     selectedRequest.setLocationEntity(location);
