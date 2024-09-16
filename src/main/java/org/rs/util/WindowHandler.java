@@ -139,6 +139,17 @@ public class WindowHandler {
         });
     }
 
+    public static void create_window_rezervacije(JFrame oldFrame, User user) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            RezervacijePanel rezervacijePanel = new RezervacijePanel(oldFrame,user);
+            oldFrame.setContentPane(rezervacijePanel.pocetnaPanel);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
+
     public static void create_window_pregled_eventa(JFrame oldFrame, User user, Event event) {
         SwingUtilities.invokeLater(() -> {
             oldFrame.getContentPane().removeAll();

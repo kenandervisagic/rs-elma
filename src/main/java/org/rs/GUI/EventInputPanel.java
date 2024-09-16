@@ -2,6 +2,7 @@ package org.rs.GUI;
 
 import org.rs.DAO.EventDAO;
 import org.rs.DAO.LocationDAO;
+import org.rs.DAO.PlaceDAO;
 import org.rs.DAO.SectorDAO;
 import org.rs.entity.*;
 import org.rs.entity.Event;
@@ -40,6 +41,7 @@ public class EventInputPanel {
     private JTextField priceField1;
     private JRadioButton dozvoljenoRadioButton;
     private JRadioButton zabranjenoRadioButton;
+    private JComboBox comboBox4;
     public JFrame oldFrame;
 
     public User user;
@@ -49,7 +51,9 @@ public class EventInputPanel {
     public EventInputPanel(User user, JFrame oldFrame, Event selectedRequest) {
         this.oldFrame = oldFrame;
         this.user = user;
-
+        ButtonGroup cancelPolicyGroup = new ButtonGroup();
+        cancelPolicyGroup.add(dozvoljenoRadioButton);
+        cancelPolicyGroup.add(zabranjenoRadioButton);
         JCheckBox[] checkboxes = {checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6};
         for (JCheckBox checkbox : checkboxes) {
             checkbox.setVisible(false);
@@ -62,12 +66,6 @@ public class EventInputPanel {
             }
         });
 
-        List<Location> locations = LocationDAO.findAllLocations();
-        DefaultComboBoxModel<String> modelL = new DefaultComboBoxModel<>();
-        for (Location location : locations) {
-            modelL.addElement(location.getLocationName());
-        }
-        comboBox3.setModel(modelL);
 
         List<EventCategory> categories = EventDAO.getAllCategories();
         DefaultComboBoxModel<String> model1 = new DefaultComboBoxModel<>();
@@ -76,6 +74,26 @@ public class EventInputPanel {
             model1.addElement(eventCategory.getCategoryName());
         }
         comboBox1.setModel(model1);
+
+        List<Place> places = PlaceDAO.getAllPlaces();
+        DefaultComboBoxModel<String> model4 = new DefaultComboBoxModel<>();
+        for (Place place : places) {
+            model4.addElement(place.getLocationName());
+        }
+        comboBox4.setModel(model4);
+
+        comboBox4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Place selectedPlace = places.get(comboBox4.getSelectedIndex());
+                List<Location> availableLocations = LocationDAO.getLocationsForPlace(selectedPlace);
+                DefaultComboBoxModel<String> modelL = new DefaultComboBoxModel<>();
+                for (Location location : availableLocations) {
+                    modelL.addElement(location.getLocationName());
+                }
+                comboBox3.setModel(modelL);
+            }
+        });
 
         DefaultComboBoxModel<String> model2 = new DefaultComboBoxModel<>();
         model2.addElement("All"); // Add "All" option
@@ -118,9 +136,18 @@ public class EventInputPanel {
 
             // Set selected location
             if (selectedRequest.getLocationEntity() != null) {
+
+                comboBox4.setSelectedItem(selectedRequest.getLocationEntity().getPlace().getLocationName());
+                Place selectedPlace = selectedRequest.getLocationEntity().getPlace();
+                List<Location> availableLocations = LocationDAO.getLocationsForPlace(selectedPlace);
+                DefaultComboBoxModel<String> modelL = new DefaultComboBoxModel<>();
+                for (Location location : availableLocations) {
+                    modelL.addElement(location.getLocationName());
+                }
+                comboBox3.setModel(modelL);
+
                 comboBox3.setSelectedItem(selectedRequest.getLocationEntity().getLocationName());
             }
-            List<Sector> sectors = SectorDAO.getSectorsForLocation(selectedRequest.getLocationEntity().getId());
 
             // Set checkbox states based on the selected sectors
 
@@ -136,6 +163,41 @@ public class EventInputPanel {
                 String selectedSubCategory = (String) comboBox2.getSelectedItem();
                 String selectedLocationName = (String) comboBox3.getSelectedItem();
                 Location location = LocationDAO.getLocationByName(selectedLocationName);
+                String priceText = priceField1.getText();
+
+
+                if (eventName == null || eventName.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Event name cannot be empty.");
+                    return;
+                }
+                if (description == null || description.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Event description cannot be empty.");
+                    return;
+                }
+                if (datum.getText() == null || datum.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Event date cannot be empty.");
+                    return;
+                }
+                if (vrijeme.getText() == null || vrijeme.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Event time cannot be empty.");
+                    return;
+                }
+                if (priceText == null || priceText.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Price cannot be empty.");
+                    return;
+                }
+                if (selectedCategory == null || selectedCategory.trim().isEmpty() || "All".equals(selectedCategory)) {
+                    JOptionPane.showMessageDialog(null, "Please select a valid category.");
+                    return;
+                }
+                if (selectedSubCategory == null || selectedSubCategory.trim().isEmpty() || "All".equals(selectedSubCategory)) {
+                    JOptionPane.showMessageDialog(null, "Please select a valid subcategory.");
+                    return;
+                }
+                if (selectedLocationName == null || selectedLocationName.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please select a valid location.");
+                    return;
+                }
 
                 if (location == null) {
                     JOptionPane.showMessageDialog(null, "Please select a valid location.");
@@ -188,6 +250,7 @@ public class EventInputPanel {
                     event.setPrice(Double.parseDouble(priceField1.getText()));
                     event.setCancelPolicy(dozvoljenoRadioButton.isSelected());
                     event.setSectors(checkedSectors);
+                    event.setActive(true);
 
                     // Persist the new event
                     boolean success = EventDAO.saveEventRequest(event);

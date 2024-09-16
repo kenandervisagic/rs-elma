@@ -39,13 +39,14 @@ public class TicketDAO {
         }
     }
 
-    public static List<Ticket> getUserTickets(User user) {
+    public static List<Ticket> getUserTickets(User user, int status) {
         EntityManager entityManager = getEntityManager();
         try {
             // Fetch tickets based on the user
             TypedQuery<Ticket> query = entityManager.createQuery(
-                    "SELECT t FROM Ticket t WHERE t.user = :user and t.status = 2", Ticket.class);
+                    "SELECT t FROM Ticket t WHERE t.user = :user and t.status = :status", Ticket.class);
             query.setParameter("user", user);
+            query.setParameter("status", status);
             return query.getResultList();
         } finally {
             entityManager.close();

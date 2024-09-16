@@ -1,10 +1,10 @@
 package org.rs.GUI;
 
-import org.rs.DAO.SectorDAO;
 import org.rs.DAO.TicketDAO;
 import org.rs.DAO.UserDAO;
 import org.rs.entity.Event;
 import org.rs.entity.Sector;
+import org.rs.entity.Ticket;
 import org.rs.entity.User;
 import org.rs.util.WindowHandler;
 
@@ -14,9 +14,6 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import org.rs.entity.Ticket;
 
 
 public class EventDetailsPanel {
@@ -107,16 +104,16 @@ public class EventDetailsPanel {
 
                     // Set status for reservation (status = 1)
 
-                    int izbor = JOptionPane.showConfirmDialog(null, "Pay now with online balance");
+                    int izbor = JOptionPane.showConfirmDialog(null, "Pay reservation fee now with online balance");
 
                     if (izbor == JOptionPane.YES_OPTION) {
-                        if (user.getBalance() < ticket.getPrice()) {
+                        if (user.getBalance() < ticket.getPrice() * 0.1) {
                             JOptionPane.showMessageDialog(null, "Not enough money");
                             return;
                         }
                         // Set status for reservation (status = 1)
-                        user.setBalance(user.getBalance() - ticket.getPrice());
-                        UserDAO.changeBalance(user, ticket.getPrice());
+                        user.setBalance(user.getBalance() - ticket.getPrice() * 0.1);
+                        UserDAO.changeBalance(user, ticket.getPrice() * 0.1);
                         TicketDAO.addTicket(ticket, 1);
                     } else {
                         TicketDAO.addTicket(ticket, 1);

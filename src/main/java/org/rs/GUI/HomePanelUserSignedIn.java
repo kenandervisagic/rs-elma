@@ -173,6 +173,14 @@ public class HomePanelUserSignedIn {
         });
 
         fetchAndDisplayEvents();
+        rezervacijeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WindowHandler.create_window_rezervacije(oldFrame,user);
+
+            }
+
+        });
     }
 
 

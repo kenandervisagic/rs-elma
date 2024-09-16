@@ -1,6 +1,7 @@
 package org.rs.DAO;
 
 import org.rs.entity.Location;
+import org.rs.entity.Place;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,6 +24,22 @@ public class LocationDAO {
             TypedQuery<Location> query = em.createQuery(queryString, Location.class);
             query.setParameter("name", name);
             return query.getSingleResult();
+        } catch (NoResultException e) {
+            // Handle the case where no result is found
+            // Return null or handle it as per your requirement
+            return null;
+        } finally {
+            // Ensure that the EntityManager is closed properly if it's not managed externally
+            em.close();
+        }
+    }
+    public static List<Location> getLocationsForPlace(Place place) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            String queryString = "SELECT l FROM Location l WHERE l.place = :place";
+            TypedQuery<Location> query = em.createQuery(queryString, Location.class);
+            query.setParameter("place", place);
+            return query.getResultList();
         } catch (NoResultException e) {
             // Handle the case where no result is found
             // Return null or handle it as per your requirement

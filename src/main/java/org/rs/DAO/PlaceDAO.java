@@ -1,5 +1,6 @@
 package org.rs.DAO;
 
+import org.rs.entity.Location;
 import org.rs.entity.Place;
 
 import javax.persistence.*;
@@ -43,5 +44,27 @@ public class PlaceDAO {
             em.close();
         }
         return places;
+    }
+
+    public static Place getPlaceByLocation(Location location) {
+        EntityManager em = null;
+        try {
+            em = emf.createEntityManager();
+
+            // Assuming there is a relationship between Place and Location
+            String queryString = "SELECT p FROM Place p WHERE :location MEMBER OF p.locations";
+            TypedQuery<Place> query = em.createQuery(queryString, Place.class);
+            query.setParameter("location", location);
+
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            // Handle the case where no result is found
+            System.out.println("No Place found for the provided location.");
+            return null; // Or handle it as per your requirement
+        } finally {
+            if (em != null) {
+                em.close(); // Ensure EntityManager is closed properly
+            }
+        }
     }
 }

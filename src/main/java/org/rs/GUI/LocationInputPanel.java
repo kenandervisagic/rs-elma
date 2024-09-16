@@ -40,6 +40,7 @@ public class LocationInputPanel {
 
         // Set the model for the JList
         list1.setModel(sectorListModel);
+        kapacitet.setEditable(false);
 
         nazadButton.addActionListener(new ActionListener() {
             @Override
@@ -52,21 +53,15 @@ public class LocationInputPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String selectedPlaceName = (String) comboBox1.getSelectedItem();
-                String capacityStr = kapacitet.getText();
 
                 // Validate input
-                if (selectedPlaceName == null || capacityStr.isEmpty() ||sectors.isEmpty()) {
+                if (selectedPlaceName == null || sectors.isEmpty() || lokacija.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please fill in all fields and add at least one sector.");
                     return;
                 }
 
-                int capacity;
-                try {
-                    capacity = Integer.parseInt(capacityStr);
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Capacity must be a number.");
-                    return;
-                }
+                // Calculate total capacity from sectors
+                int totalCapacity = sectors.stream().mapToInt(Sector::getCapacity).sum();
 
                 // Retrieve Place entity based on selected name
                 Place selectedPlace = places.stream()
@@ -81,7 +76,7 @@ public class LocationInputPanel {
 
                 // Create new Location object
                 Location newLocation = new Location();
-                newLocation.setCapacity(capacity);
+                newLocation.setCapacity(totalCapacity);  // Use calculated total capacity
                 newLocation.setPlace(selectedPlace);
                 newLocation.setLocationName(lokacija.getText());
 
@@ -94,11 +89,10 @@ public class LocationInputPanel {
                 UserDAO.addLocationWithSectors(newLocation, sectors);
 
                 // Show a confirmation message
-                JOptionPane.showMessageDialog(null, "Location and sectors added successfully.");
+                JOptionPane.showMessageDialog(null, "Location and sectors added successfully. Total capacity: " + totalCapacity);
 
                 // Clear input fields
                 lokacija.setText("");
-                kapacitet.setText("");
                 nazivSektora.setText("");
                 kapacitetSektora.setText("");
                 sectorListModel.clear();  // Clear the sector list display
@@ -106,6 +100,7 @@ public class LocationInputPanel {
                 sectors.clear(); // Clear the sectors set
             }
         });
+
 
         unosSektoraButton.addActionListener(new ActionListener() {
             @Override
@@ -134,7 +129,7 @@ public class LocationInputPanel {
                 // Add the sector to the set and update the JList
                 sectors.add(sector);
                 sectorListModel.addElement(sectorName + " (" + sectorCapacity + ")");
-
+                kapacitet.setText(String.valueOf(sectors.stream().mapToInt(Sector::getCapacity).sum()));
                 // Clear the sector input fields
                 nazivSektora.setText("");
                 kapacitetSektora.setText("");
