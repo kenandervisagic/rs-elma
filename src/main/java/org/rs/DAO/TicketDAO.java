@@ -52,6 +52,32 @@ public class TicketDAO {
             entityManager.close();
         }
     }
+    public static List<Ticket> getTicketsByStatus0(User user, int page, int size) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Ticket> query = em.createQuery(
+                    "SELECT t FROM Ticket t WHERE t.user = :user AND t.status = 0", Ticket.class);
+            query.setParameter("user", user);
+            query.setFirstResult(page * size);
+            query.setMaxResults(size);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public static int getTotalNumberOfTicketsByStatus0(User user) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(t) FROM Ticket t WHERE t.user = :user AND t.status = 0", Long.class);
+            query.setParameter("user", user);
+            return query.getSingleResult().intValue();
+        } finally {
+            em.close();
+        }
+    }
+
     public static int getSoldEventTicketsNumber(Event event) {
         EntityManager entityManager = getEntityManager();
         try {

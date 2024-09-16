@@ -127,6 +127,16 @@ public class WindowHandler {
             oldFrame.setVisible(true);
         });
     }
+    public static void create_window_profile(JFrame oldFrame, User user) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            ProfilePanel profilePanel = new ProfilePanel(oldFrame, user);
+            oldFrame.setContentPane(profilePanel.pocetnaPanel);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
 
     public static void create_window_korpa(JFrame oldFrame, User user) {
         SwingUtilities.invokeLater(() -> {

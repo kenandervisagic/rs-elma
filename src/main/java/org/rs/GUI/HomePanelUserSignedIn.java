@@ -181,6 +181,13 @@ public class HomePanelUserSignedIn {
             }
 
         });
+        profilButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                WindowHandler.create_window_profile(oldFrame,user);
+            }
+        });
     }
 
 
