@@ -32,7 +32,7 @@ public class organizator {
         pregledDogađajaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                WindowHandler.create_window_unesi_mjesto(oldFrame);
+                WindowHandler.create_window_pregled_eventa_organizator(user, oldFrame);
             }
         });
         PregledZahtjevaButton.addActionListener(new ActionListener() {

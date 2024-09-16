@@ -1,6 +1,7 @@
 package org.rs.DAO;
 
 
+import org.rs.entity.Event;
 import org.rs.entity.Ticket;
 import org.rs.entity.User;
 import org.rs.util.JpaUtil;
@@ -50,6 +51,21 @@ public class TicketDAO {
             entityManager.close();
         }
     }
+    public static int getSoldEventTicketsNumber(Event event) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            // Fetch the count of sold tickets for the event
+            TypedQuery<Long> query = entityManager.createQuery(
+                    "SELECT COUNT(t) FROM Ticket t WHERE t.event = :event AND t.user IS NOT NULL AND t.status != 2", Long.class);
+            query.setParameter("event", event);
+
+            Long soldTickets = query.getSingleResult();
+            return soldTickets != null ? soldTickets.intValue() : 0;
+        } finally {
+            entityManager.close();
+        }
+    }
+
     public static boolean deleteTicket(Ticket ticket) {
         EntityManager em = getEntityManager();
         EntityTransaction transaction = em.getTransaction();

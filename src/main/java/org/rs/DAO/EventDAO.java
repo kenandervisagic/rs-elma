@@ -22,6 +22,38 @@ public class EventDAO {
             em.close();
         }
     }
+    public static List<Event> getActiveApprovedEvents() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT e FROM Event e WHERE e.approved = true AND e.active = true", Event.class)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public static List<Event> getInactiveApprovedEvents() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT e FROM Event e WHERE e.approved = true AND e.active = false", Event.class)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public static void deactivateEvent(Event event) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            event.setActive(false); // Assuming there is an 'active' field in the Event class
+            em.merge(event);
+            transaction.commit();
+        } finally {
+            em.close();
+        }
+    }
 
     public static boolean saveEventRequest(Event event) {
         EntityManager em = null;
@@ -121,7 +153,7 @@ public class EventDAO {
     public static List<Event> getEventsByFilters(String categoryName, String subCategoryName, int page, int size) {
         EntityManager em = emf.createEntityManager();
         try {
-            StringBuilder queryStr = new StringBuilder("SELECT e FROM Event e WHERE 1=1");
+            StringBuilder queryStr = new StringBuilder("SELECT e FROM Event e WHERE 1=1 AND e.approved = true AND e.active = true");
 
             EventCategory category = (categoryName != null) ? getCategoryByName(categoryName) : null;
             EventSubCategory subCategory = (subCategoryName != null) ? getSubCategoryByName(subCategoryName) : null;
@@ -155,7 +187,7 @@ public class EventDAO {
     public static int getTotalNumberOfFilteredEvents(String categoryName, String subCategoryName) {
         EntityManager em = emf.createEntityManager();
         try {
-            StringBuilder queryStr = new StringBuilder("SELECT COUNT(e) FROM Event e WHERE 1=1");
+            StringBuilder queryStr = new StringBuilder("SELECT COUNT(e) FROM Event e WHERE 1=1 AND e.approved = true AND e.active = true");
 
             EventCategory category = (categoryName != null) ? getCategoryByName(categoryName) : null;
             EventSubCategory subCategory = (subCategoryName != null) ? getSubCategoryByName(subCategoryName) : null;
@@ -266,7 +298,7 @@ public class EventDAO {
     public static List<Event> searchEventsByCriterion(String criterion, String value, int page, int size) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            StringBuilder jpql = new StringBuilder("SELECT e FROM Event e WHERE 1=1");
+            StringBuilder jpql = new StringBuilder("SELECT e FROM Event e WHERE 1=1 AND e.approved = true AND e.active = true");
 
             parseCriterion(criterion, jpql);
 
@@ -301,7 +333,7 @@ public class EventDAO {
     public static int getTotalNumberOfFilteredEventsByCriterion(String criterion, String value) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            StringBuilder jpql = new StringBuilder("SELECT COUNT(e) FROM Event e WHERE 1=1");
+            StringBuilder jpql = new StringBuilder("SELECT COUNT(e) FROM Event e WHERE 1=1 AND e.approved = true AND e.active = true");
 
             parseCriterion(criterion, jpql);
 

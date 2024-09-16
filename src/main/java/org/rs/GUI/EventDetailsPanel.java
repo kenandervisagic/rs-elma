@@ -12,7 +12,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.rs.entity.Ticket;
 
@@ -30,6 +32,8 @@ public class EventDetailsPanel {
     private JButton nazadButton;
     private JLabel opis;
     private JButton dodajUKorpuButton;
+    private JLabel dostupnoLabel;
+    private JLabel sektorLabel;
     public User user;
     public Event event;
 
@@ -42,64 +46,40 @@ public class EventDetailsPanel {
             kupiButton.setVisible(false);
             rezervisiButton.setVisible(false);
             dodajUKorpuButton.setVisible(false);
+            comboBox1.setVisible(false);
+            sektorLabel.setVisible(false);
         }
         naslov.setText(event.getEventName());
         datum.setText(event.getEventDate().toString() + "   ");
         lokacija.setText(event.getLocationEntity().getLocationName());
         opis.setText(event.getDescription());
         vrijeme.setText(event.getEventTime().toString());
+        dostupnoLabel.setText("Dostupno: " + (event.getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(event)));
+        cijena.setText((event.getPrice()) + "KM");
 
 
-        List<Sector> sectors = SectorDAO.getSectorsForLocation(event.getLocationEntity().getId());
-        // Populate JComboBox with place names
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        for (Sector sector : sectors) {
-            model.addElement(sector.getSectorName());
-        }
-        comboBox1.setModel(model);
+        if (user != null) {
+            List<Sector> sectors = new ArrayList<>(event.getSectors());
 
-        kupiButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                Ticket ticket = new Ticket();
-                ticket.setEvent(event);
-                ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));
-                ticket.setPrice(100.00); // Example price, can be dynamic
-                ticket.setUser(user);
-                ticket.setPurchaseStartDate(LocalDate.now());
-                ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
-                ticket.setCancellationPolicy("No refund"); // Example cancellation policy
-
-                if (user.getBalance() < ticket.getPrice()) {
-                    JOptionPane.showMessageDialog(null, "Not enough money");
-                    return;
-                }
-                // Set status for reservation (status = 1)
-                user.setBalance(user.getBalance() - ticket.getPrice());
-                UserDAO.changeBalance(user, ticket.getPrice());
-                TicketDAO.addTicket(ticket, 0);
-
-                JOptionPane.showMessageDialog(null, "Ticket purchased successfully!");
-
+            // Populate JComboBox with place names
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+            for (Sector sector : sectors) {
+                model.addElement(sector.getSectorName());
             }
-        });
-        rezervisiButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Ticket ticket = new Ticket();
-                ticket.setEvent(event);
-                ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));
-                ticket.setPrice(100.00); // Example price, can be dynamic
-                ticket.setUser(user);
-                ticket.setPurchaseStartDate(LocalDate.now());
-                ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
-                ticket.setCancellationPolicy("No refund"); // Example cancellation policy
+            comboBox1.setModel(model);
 
-                // Set status for reservation (status = 1)
+            kupiButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    Ticket ticket = new Ticket();
+                    ticket.setEvent(event);
+                    ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));
+                    ticket.setPrice(event.getPrice()); // Example price, can be dynamic
+                    ticket.setUser(user);
+                    ticket.setPurchaseStartDate(LocalDate.now());
+                    ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
+                    ticket.setCancellationPolicy(event.isCancelPolicy()); // Example cancellation policy
 
-                int izbor = JOptionPane.showConfirmDialog(null, "Pay now with online balance");
-
-                if (izbor == JOptionPane.YES_OPTION) {
                     if (user.getBalance() < ticket.getPrice()) {
                         JOptionPane.showMessageDialog(null, "Not enough money");
                         return;
@@ -107,14 +87,66 @@ public class EventDetailsPanel {
                     // Set status for reservation (status = 1)
                     user.setBalance(user.getBalance() - ticket.getPrice());
                     UserDAO.changeBalance(user, ticket.getPrice());
-                    TicketDAO.addTicket(ticket, 1);
-                } else {
-                    TicketDAO.addTicket(ticket, 1);
-                }
+                    TicketDAO.addTicket(ticket, 0);
 
-                JOptionPane.showMessageDialog(null, "Ticket reserved successfully!");
-            }
-        });
+                    JOptionPane.showMessageDialog(null, "Ticket purchased successfully!");
+
+                }
+            });
+            rezervisiButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Ticket ticket = new Ticket();
+                    ticket.setEvent(event);
+                    ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));
+                    ticket.setPrice(event.getPrice()); // Example price, can be dynamic
+                    ticket.setUser(user);
+                    ticket.setPurchaseStartDate(LocalDate.now());
+                    ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
+                    ticket.setCancellationPolicy(event.isCancelPolicy()); // Example cancellation policy
+
+                    // Set status for reservation (status = 1)
+
+                    int izbor = JOptionPane.showConfirmDialog(null, "Pay now with online balance");
+
+                    if (izbor == JOptionPane.YES_OPTION) {
+                        if (user.getBalance() < ticket.getPrice()) {
+                            JOptionPane.showMessageDialog(null, "Not enough money");
+                            return;
+                        }
+                        // Set status for reservation (status = 1)
+                        user.setBalance(user.getBalance() - ticket.getPrice());
+                        UserDAO.changeBalance(user, ticket.getPrice());
+                        TicketDAO.addTicket(ticket, 1);
+                    } else {
+                        TicketDAO.addTicket(ticket, 1);
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Ticket reserved successfully!");
+                }
+            });
+
+            dodajUKorpuButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    Ticket ticket = new Ticket();
+                    ticket.setEvent(event);
+                    ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));
+                    ticket.setPrice(event.getPrice()); // Example price, can be dynamic
+                    ticket.setPurchaseStartDate(LocalDate.now());
+                    ticket.setUser(user);
+                    ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
+                    ticket.setCancellationPolicy(event.isCancelPolicy()); // Example cancellation policy
+
+                    // Set status for reservation (status = 1)
+                    TicketDAO.addTicket(ticket, 2);
+
+                    JOptionPane.showMessageDialog(null, "Ticket added to basket successfully!");
+
+                }
+            });
+        }
         nazadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -125,26 +157,7 @@ public class EventDetailsPanel {
                 }
             }
         });
-        dodajUKorpuButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                Ticket ticket = new Ticket();
-                ticket.setEvent(event);
-                ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));
-                ticket.setPrice(100.00); // Example price, can be dynamic
-                ticket.setPurchaseStartDate(LocalDate.now());
-                ticket.setUser(user);
-                ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
-                ticket.setCancellationPolicy("No refund"); // Example cancellation policy
-
-                // Set status for reservation (status = 1)
-                TicketDAO.addTicket(ticket, 2);
-
-                JOptionPane.showMessageDialog(null, "Ticket added to basket successfully!");
-
-            }
-        });
     }
+
 
 }

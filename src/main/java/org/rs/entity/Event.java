@@ -49,6 +49,9 @@ public class Event {
     @Column (name="approved")
     private boolean approved;
 
+    @Column (name="active")
+    private boolean active;
+
     @Column (name="cancel_policy", nullable = false)
     private boolean cancelPolicy; //True -> can cancel
 

@@ -30,7 +30,7 @@ public class Ticket {
     private LocalDate purchaseEndDate;
 
     @Column(name = "cancellation_policy")
-    private String cancellationPolicy;
+    private Boolean cancellationPolicy;
 
     @Column(name = "seat_number")
     private Integer seatNumber;
@@ -40,7 +40,7 @@ public class Ticket {
     private Sector sector;
 
     @Column (name = "ticket_status")
-    private Integer status; //0-purchased 1-reservation 2-in cart 3 - available
+    private Integer status; //0-purchased 1-reservation 2-in cart
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)

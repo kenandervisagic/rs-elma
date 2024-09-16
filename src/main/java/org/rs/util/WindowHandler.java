@@ -106,6 +106,16 @@ public class WindowHandler {
             oldFrame.setVisible(true);
         });
     }
+    public static void create_window_pregled_eventa_organizator(User user, JFrame oldFrame) {
+        SwingUtilities.invokeLater(() -> {
+            oldFrame.getContentPane().removeAll();
+            ReviewEventsOrgPanel reviewEventsOrgPanel = new ReviewEventsOrgPanel(user, oldFrame);
+            oldFrame.setContentPane(reviewEventsOrgPanel.panel_zahtjevi);
+            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            oldFrame.pack();
+            oldFrame.setVisible(true);
+        });
+    }
 
     public static void create_window_user(JFrame oldFrame, User user) {
         SwingUtilities.invokeLater(() -> {
