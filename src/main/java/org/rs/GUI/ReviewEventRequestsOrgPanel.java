@@ -2,7 +2,7 @@ package org.rs.GUI;
 
 
 import org.rs.DAO.EventDAO;
-import org.rs.entity.EventRequest;
+import org.rs.entity.Event;
 import org.rs.entity.User;
 import org.rs.util.WindowHandler;
 
@@ -19,15 +19,15 @@ public class ReviewEventRequestsOrgPanel {
     private JButton prihvatiButton;
     private JButton nazadButton;
     public JPanel panel_zahtjevi;
-    private List<EventRequest> requests;
-    private EventRequest selectedRequest;
+    private List<Event> requests;
+    private Event selectedRequest;
     private int selectedIndex;
     public User user;
     public ReviewEventRequestsOrgPanel(User user, JFrame oldFrame) {
         this.user = user;
         requests = EventDAO.getAllEventRequest();
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (EventRequest request : requests) {
+        for (Event request : requests) {
             listModel.addElement(request.toString());
         }
         list1.setModel(listModel); // Ensure the JList uses the DefaultListModel

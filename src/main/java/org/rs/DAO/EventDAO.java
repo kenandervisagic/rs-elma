@@ -22,7 +22,8 @@ public class EventDAO {
             em.close();
         }
     }
-    public static boolean saveEventRequest(EventRequest event) {
+
+    public static boolean saveEventRequest(Event event) {
         EntityManager em = null;
         EntityTransaction transaction = null;
         boolean isSuccess = false;
@@ -49,7 +50,7 @@ public class EventDAO {
         return isSuccess;
     }
 
-    public static boolean updateEventRequest(EventRequest event) {
+    public static boolean updateEventRequest(Event event) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -65,106 +66,34 @@ public class EventDAO {
         }
     }
 
-    public Event findEventById(Long id) {
-        EntityManager em = emf.createEntityManager();
-        Event event = em.find(Event.class, id);
-        em.close();
-        return event;
-    }
 
-    public Event findEventByName(String name) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            List<Event> eventName = em.createQuery("SELECT e FROM Event e WHERE e.eventName = :name", Event.class).
-                    setParameter("name", name).
-                    getResultList();
-            return eventName.isEmpty() ? null : eventName.get(0);
-        } finally {
-            em.close();
-        }
-    }
-
-    public List<Event> findEventsByOrganizer(Long organizerId) {
-        EntityManager em = emf.createEntityManager();
-        List<Event> eventOrganizers = em.createQuery("SELECT e FROM Event e WHERE e.organizer.id = :organizerId", Event.class)
-                .setParameter("organizerId", organizerId)
-                .getResultList();
-        em.close();
-        return eventOrganizers;
-    }
-
-    public List<Event> findAllEvents() {
-        EntityManager em = emf.createEntityManager();
-        List<Event> allEvents = em.createQuery("SELECT e FROM Event e", Event.class).getResultList();
-        em.close();
-        return allEvents;
-    }
-
-    public List<Event> findAllEventsByOrganizer(EventOrganizer organizer) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            // Pretpostavka: Organizator ima identifikator (npr. id) koji povezuje događaje sa organizatorom
-            List<Event> allEventOrganizers = em.createQuery("SELECT e FROM Event e WHERE e.id = :id", Event.class).
-                    setParameter("id", organizer.getId()).
-                    getResultList();
-            return allEventOrganizers;
-        } finally {
-            em.close();
-        }
-    }
-
-    public void updateEvent(Event event) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.merge(event);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
-    }
-
-    public void deleteEvent(Long id) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        Event event = em.find(Event.class, id);
-        if (event != null) {
-            em.remove(event);
-        }
-        em.getTransaction().commit();
-        em.close();
-    }
-
-    public static void approveRequest(EventRequest eventRequest) {
+    public static void approveRequest(Event eventRequest) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
         try {
             transaction.begin();
 
-            // Create a new User based on the Request
-            Event event = new Event();
-            event.setOrganizer(eventRequest.getOrganizer());
-            event.setCategory(eventRequest.getCategory());
-            event.setSubCategory(eventRequest.getSubCategory());
-            event.setEventName(eventRequest.getEventName());
-            event.setDescription(eventRequest.getDescription());
-            event.setEventDate(eventRequest.getEventDate());
-            event.setEventTime(eventRequest.getEventTime());
-            event.setMaxTickets(eventRequest.getMaxTickets());
-            event.setLocationEntity(eventRequest.getLocationEntity());
-            event.setTickets(eventRequest.getTickets());
+            // Merge the detached entity to attach it to the persistence context if necessary
+            Event managedEvent = em.contains(eventRequest) ? eventRequest : em.merge(eventRequest);
 
-            em.persist(event);
-            em.remove(em.contains(eventRequest) ? eventRequest : em.merge(eventRequest));
+            // Set the approved status to true
+            managedEvent.setApproved(true);
 
-            em.getTransaction().commit();
+            // No need to persist or remove the entity as we are just updating it
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;  // Rethrow or handle the exception
         } finally {
             em.close();
         }
     }
 
-    public static void rejectRequest(EventRequest request) {
+
+    public static void rejectRequest(Event request) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         try {
@@ -267,11 +196,11 @@ public class EventDAO {
         return categories;
     }
 
-    public static List<EventRequest> getAllEventRequest() {
+    public static List<Event> getAllEventRequest() {
         EntityManager em = emf.createEntityManager();
-        List<EventRequest> requests = null;
+        List<Event> requests = null;
         try {
-            TypedQuery<EventRequest> query = em.createQuery("SELECT c FROM EventRequest c", EventRequest.class);
+            TypedQuery<Event> query = em.createQuery("SELECT c FROM Event c WHERE approved=false", Event.class);
             requests = query.getResultList();
         } catch (Exception e) {
             e.printStackTrace(); // Handle exceptions or use a logging framework

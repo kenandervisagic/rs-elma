@@ -2,7 +2,6 @@ package org.rs.util;
 
 import org.rs.GUI.*;
 import org.rs.entity.Event;
-import org.rs.entity.EventRequest;
 import org.rs.entity.User;
 
 import javax.swing.*;
@@ -150,7 +149,7 @@ public class WindowHandler {
             oldFrame.setVisible(true);
         });
     }
-    public static void create_window_unesi_događaj(User user, JFrame oldFrame, EventRequest selectedRequest) {
+    public static void create_window_unesi_događaj(User user, JFrame oldFrame, Event selectedRequest) {
         SwingUtilities.invokeLater(() -> {
             oldFrame.getContentPane().removeAll();
             EventInputPanel eventInputPanel = new EventInputPanel(user, oldFrame, selectedRequest);
@@ -161,14 +160,4 @@ public class WindowHandler {
         });
     }
 
-    public static void create_window_unesi_karte(User user, JFrame oldFrame, EventRequest selectedRequest) {
-        SwingUtilities.invokeLater(() -> {
-            oldFrame.getContentPane().removeAll();
-            TicketCreatePanel ticketCreatePanel = new TicketCreatePanel(user,oldFrame,selectedRequest);
-            oldFrame.setContentPane(ticketCreatePanel.unesi_korisnika);
-            oldFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            oldFrame.pack();
-            oldFrame.setVisible(true);
-        });
-    }
 }

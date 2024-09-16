@@ -1,9 +1,9 @@
 package org.rs.GUI;
 
 import org.rs.DAO.SectorDAO;
-import org.rs.entity.EventRequest;
 import org.rs.entity.Sector;
 import org.rs.entity.User;
+import org.rs.entity.Event;
 import org.rs.util.WindowHandler;
 
 import javax.swing.*;
@@ -18,7 +18,7 @@ public class TicketCreatePanel {
     private JButton potvrdiButton;
     private JButton nazadButton;
 
-    public TicketCreatePanel(User user, JFrame oldFrame, EventRequest eventRequest) {
+    public TicketCreatePanel(User user, JFrame oldFrame, Event eventRequest) {
         // Initialize the sectorsPanel
         sectorsPanel = new JPanel();
         sectorsPanel.setLayout(new BoxLayout(sectorsPanel, BoxLayout.Y_AXIS));

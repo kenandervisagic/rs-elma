@@ -5,7 +5,6 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Set;
 
 @Entity
 @Table(name = "events")
@@ -40,14 +39,30 @@ public class Event {
     @Column(name = "event_time", nullable = false)
     private LocalTime eventTime;
 
-
     @Column(name = "max_tickets", nullable = false)
     private Integer maxTickets;
+
+    @Column(name ="ticket_price", nullable = false)
+    private double price;
+
+    @Column (name="approved")
+    private boolean approved;
+
+    @Column (name="cancel_policy", nullable = false)
+    private boolean cancelPolicy; //True -> can cancel
 
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location locationEntity;
 
-    @OneToMany(mappedBy = "event")
-    private Set<Ticket> tickets;
+    @Override
+    public String toString() {
+        return String.format("%s - %s -> %s at %s on %s",
+                eventName,
+                category.getCategoryName(),
+                subCategory.getSubCategoryName(),
+                locationEntity.getLocationName(),
+                eventDate.toString()
+        );
+    }
 }

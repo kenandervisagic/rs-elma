@@ -27,7 +27,6 @@ public class EventInputPanel {
     private JTextField vrijeme;
     private JComboBox<String> comboBox2;
     private JComboBox<String> comboBox3;
-    private JButton konfigurisiKarteButton;
     private JPanel sectorsPanel;  // Panel to hold checkboxes for sectors
     private JCheckBox checkBox1;
     private JCheckBox checkBox2;
@@ -44,17 +43,13 @@ public class EventInputPanel {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    public EventInputPanel(User user, JFrame oldFrame, EventRequest selectedRequest) {
+    public EventInputPanel(User user, JFrame oldFrame, Event selectedRequest) {
         this.oldFrame = oldFrame;
         this.user = user;
 
         JCheckBox[] checkboxes = {checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6};
         for (JCheckBox checkbox : checkboxes) {
             checkbox.setVisible(false);
-        }
-// Add sectorsPanel to your main panel or frame
-        if (selectedRequest != null) {
-            konfigurisiKarteButton.setEnabled(false);
         }
 
         comboBox1.addActionListener(new ActionListener() {
@@ -100,7 +95,13 @@ public class EventInputPanel {
             opis.setText(selectedRequest.getDescription());
             datum.setText(selectedRequest.getEventDate().format(DATE_FORMATTER));
             vrijeme.setText(selectedRequest.getEventTime().format(TIME_FORMATTER));
-            maxKarata.setText(String.valueOf(selectedRequest.getMaxTickets()));
+            priceField1.setText(String.valueOf(selectedRequest.getPrice()));
+
+            if(selectedRequest.isCancelPolicy()){
+                dozvoljenoRadioButton.setSelected(true);
+            }else {
+                zabranjenoRadioButton.setSelected(true);
+            }
 
             // Set selected category
             if (selectedRequest.getCategory() != null) {
@@ -127,7 +128,7 @@ public class EventInputPanel {
                 String selectedCategory = (String) comboBox1.getSelectedItem();
                 String selectedSubCategory = (String) comboBox2.getSelectedItem();
                 String selectedLocationName = (String) comboBox3.getSelectedItem();
-                int capacity = Integer.parseInt(maxKarata.getText()); // Assuming capacity is an integer
+                int capacity = 100;
 
                 // Fetch category and subcategory entities
                 Location location = LocationDAO.getLocationByName(selectedLocationName);
@@ -146,8 +147,8 @@ public class EventInputPanel {
                 }
 
                 if (selectedRequest == null) {
-                    // Create a new EventRequest object
-                    EventRequest event = new EventRequest();
+                    // Create a new Event object
+                    Event event = new Event();
                     event.setEventName(eventName);
                     event.setDescription(description);
                     event.setEventDate(eventDate);
@@ -157,6 +158,8 @@ public class EventInputPanel {
                     event.setSubCategory(subCategory1);
                     event.setLocationEntity(location);
                     event.setOrganizer(user);
+                    event.setPrice(Double.parseDouble(priceField1.getText()));
+                    event.setCancelPolicy(dozvoljenoRadioButton.isSelected());
 
                     // Persist the new event
                     boolean success = EventDAO.saveEventRequest(event);
@@ -168,7 +171,7 @@ public class EventInputPanel {
                         JOptionPane.showMessageDialog(null, "Failed to create event.");
                     }
                 } else {
-                    // Update the existing EventRequest object
+                    // Update the existing Event object
                     selectedRequest.setEventName(eventName);
                     selectedRequest.setDescription(description);
                     selectedRequest.setEventDate(eventDate);
@@ -178,6 +181,8 @@ public class EventInputPanel {
                     selectedRequest.setSubCategory(subCategory1);
                     selectedRequest.setLocationEntity(location);
                     selectedRequest.setOrganizer(user);
+                    selectedRequest.setCancelPolicy(dozvoljenoRadioButton.isSelected());
+                    selectedRequest.setPrice(Double.parseDouble(priceField1.getText()));
 
                     // Update the event in the database
                     boolean success = EventDAO.updateEventRequest(selectedRequest);
@@ -199,43 +204,6 @@ public class EventInputPanel {
             }
         });
 
-        konfigurisiKarteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                String selectedLocationName = (String) comboBox3.getSelectedItem();
-//                Location location = LocationDAO.getLocationByName(selectedLocationName);
-//
-//                if (location == null) {
-//                    JOptionPane.showMessageDialog(null, "Please select a valid location.");
-//                    return;
-//                }
-//
-//                // Fetch selected sectors
-//                List<Sector> sectors = SectorDAO.getSectorsForLocation(location.getId());
-//                JCheckBox[] checkboxes = {checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6};
-//
-//                int totalCapacity = 0;
-//                for (int i = 0; i < sectors.size(); i++) {
-//                    if (checkboxes[i].isSelected()) {
-//                        totalCapacity += sectors.get(i).getCapacity();
-//                    }
-//                }
-//
-//                if (totalCapacity <= 0) {
-//                    JOptionPane.showMessageDialog(null, "Please select at least one sector.");
-//                    return;
-//                }
-//
-//                // Create tickets based on total capacity
-//                boolean success = createTicketsForEvent(selectedRequest, totalCapacity);
-//
-//                if (success) {
-//                    JOptionPane.showMessageDialog(null, totalCapacity + " tickets created successfully!");
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "Failed to create tickets.");
-//                }
-            }
-        });
     }
 
     private void fetchSubCategories(String categoryName) {
@@ -284,29 +252,4 @@ public class EventInputPanel {
         sectorsPanel.revalidate();
         sectorsPanel.repaint();
     }
-//    private boolean createTicketsForEvent(Event event, int totalCapacity) {
-//        try {
-//            for (int i = 1; i <= totalCapacity; i++) {
-//                Ticket ticket = new Ticket();
-//                ticket.setEvent(event);
-//                ticket.setSeatNumber(i);
-//                ticket.setStatus(3);
-//                ticket.setPrice(Double.valueOf(priceField1.getText()));
-//                ticket.set
-//
-//
-//                // Save ticket to database
-//                boolean success = EventDAO.saveTicket(ticket);
-//
-//                if (!success) {
-//                    return false; // Return false if any ticket fails to be saved
-//                }
-//            }
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-
 }
