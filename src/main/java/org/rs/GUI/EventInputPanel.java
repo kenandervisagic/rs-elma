@@ -13,7 +13,10 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class EventInputPanel {
     private JButton nazadButton;
@@ -84,7 +87,7 @@ public class EventInputPanel {
                 String selectedLocationName = (String) comboBox3.getSelectedItem();
                 if (selectedLocationName != null) {
                     Location location = LocationDAO.getLocationByName(selectedLocationName);
-                    updateSectorCheckboxes(location);
+                    updateSectorCheckboxes(location,selectedRequest);
                 }
             }
         });
@@ -117,6 +120,10 @@ public class EventInputPanel {
             if (selectedRequest.getLocationEntity() != null) {
                 comboBox3.setSelectedItem(selectedRequest.getLocationEntity().getLocationName());
             }
+            List<Sector> sectors = SectorDAO.getSectorsForLocation(selectedRequest.getLocationEntity().getId());
+
+            // Set checkbox states based on the selected sectors
+
         }
 
         potvrdiButton.addActionListener(new ActionListener() {
@@ -137,10 +144,12 @@ public class EventInputPanel {
 
                 // Fetch selected sectors
                 List<Sector> sectors = SectorDAO.getSectorsForLocation(location.getId());
+                Set<Sector> checkedSectors = new HashSet<>();
                 int totalCapacity = 0;
                 for (int i = 0; i < sectors.size(); i++) {
                     if (checkboxes[i].isSelected()) {
                         totalCapacity += sectors.get(i).getCapacity();
+                        checkedSectors.add(sectors.get(i));
                     }
                 }
 
@@ -178,6 +187,7 @@ public class EventInputPanel {
                     event.setOrganizer(user);
                     event.setPrice(Double.parseDouble(priceField1.getText()));
                     event.setCancelPolicy(dozvoljenoRadioButton.isSelected());
+                    event.setSectors(checkedSectors);
 
                     // Persist the new event
                     boolean success = EventDAO.saveEventRequest(event);
@@ -201,6 +211,7 @@ public class EventInputPanel {
                     selectedRequest.setOrganizer(user);
                     selectedRequest.setCancelPolicy(dozvoljenoRadioButton.isSelected());
                     selectedRequest.setPrice(Double.parseDouble(priceField1.getText()));
+                    selectedRequest.setSectors(checkedSectors);
 
                     // Update the event in the database
                     boolean success = EventDAO.updateEventRequest(selectedRequest);
@@ -241,7 +252,7 @@ public class EventInputPanel {
         }
     }
 
-    private void updateSectorCheckboxes(Location location) {
+    private void updateSectorCheckboxes(Location location, Event selectedRequest) {
         // Ensure sectorsPanel is not null
         if (sectorsPanel == null) {
             System.err.println("sectorsPanel is not initialized.");
@@ -254,12 +265,25 @@ public class EventInputPanel {
         // Array of checkboxes to manage
         JCheckBox[] checkboxes = {checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6};
 
-        // Update checkbox titles and visibility based on the sectors
+        // Get the selected sectors from the request (if any)
+        Set<Sector> selectedSectors = selectedRequest != null ? selectedRequest.getSectors() : new HashSet<>();
+
+        // Debugging: print selected sectors
+        System.out.println("Selected Sectors: " + selectedSectors);
+
+        // Update checkbox titles, visibility, and checked state based on the sectors
         for (int i = 0; i < checkboxes.length; i++) {
             if (i < sectors.size()) {
+                Sector sector = sectors.get(i);
+
                 // Set the checkbox title to the sector name
-                checkboxes[i].setText(sectors.get(i).getSectorName() + " (" + sectors.get(i).getCapacity() + ")");
+                checkboxes[i].setText(sector.getSectorName() + " (" + sector.getCapacity() + ")");
                 checkboxes[i].setVisible(true);
+
+                // Check the checkbox based on sector ID
+                boolean isSelected = selectedSectors.stream()
+                        .anyMatch(selectedSector -> selectedSector.getId().equals(sector.getId()));
+                checkboxes[i].setSelected(isSelected);
             } else {
                 // Hide the checkbox if there are fewer sectors than checkboxes
                 checkboxes[i].setVisible(false);
@@ -270,4 +294,6 @@ public class EventInputPanel {
         sectorsPanel.revalidate();
         sectorsPanel.repaint();
     }
+
+
 }

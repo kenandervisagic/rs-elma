@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "events")
@@ -54,6 +55,16 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location locationEntity;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "event_sectors",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "sector_id")
+    )
+    private Set<Sector> sectors;  // Set of sectors where the event will take place
+
+
 
     @Override
     public String toString() {
