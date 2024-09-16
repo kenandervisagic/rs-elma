@@ -248,7 +248,7 @@ public class EventInputPanel {
                     event.setLocationEntity(location);
                     event.setOrganizer(user);
                     event.setPrice(Double.parseDouble(priceField1.getText()));
-                    event.setCancelPolicy(dozvoljenoRadioButton.isSelected());
+                    event.setCancelPolicy(!dozvoljenoRadioButton.isSelected());
                     event.setSectors(checkedSectors);
                     event.setActive(true);
 

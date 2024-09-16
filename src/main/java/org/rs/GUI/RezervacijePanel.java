@@ -24,6 +24,7 @@ public class RezervacijePanel {
     private JTable table1;
     private JButton izbaciButton;
     private JButton nazadButton;
+    private JButton kupiButton;
     public User user;
     private List<Ticket> tickets;
 
@@ -35,7 +36,7 @@ public class RezervacijePanel {
         korpaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                WindowHandler.create_window_login(oldFrame);
+                WindowHandler.create_window_korpa(oldFrame, user);
             }
         });
 
@@ -63,6 +64,12 @@ public class RezervacijePanel {
                 WindowHandler.create_window_user(oldFrame, user);
             }
         });
+        kupiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                purchaseSelectedTicket();
+            }
+        });
     }
 
     private void setupTable() {
@@ -71,7 +78,6 @@ public class RezervacijePanel {
         model.addColumn("Event Location");
         model.addColumn("Event Date");
         model.addColumn("Cancelation fee");
-        model.addColumn("Paid");
         model.addColumn("Ticket Price");
 
         table1.setModel(model);
@@ -100,9 +106,8 @@ public class RezervacijePanel {
                     event.getEventName(),
                     event.getLocationEntity().getLocationName(),
                     event.getEventDate().toString(),
-                    ticket.getCancellationPolicy() ? String.valueOf(event.getPrice() * 0.1) + "KM" : "-",
-                    "Paid",
-                    ticket.getPrice() + " KM"
+                    ticket.getCancellationPolicy() ? "Bez naknade" : "Naknada 10%",
+                    ticket.getPrice() * 0.9 + " KM"
             });
         }
     }
@@ -111,6 +116,10 @@ public class RezervacijePanel {
         int selectedRow = table1.getSelectedRow();
         if (selectedRow != -1) {
             Ticket selectedTicket = tickets.get(selectedRow);
+            if(selectedTicket.getCancellationPolicy()){
+                user.setBalance(user.getBalance() + selectedTicket.getPrice() * 0.1);
+                UserDAO.changeBalance(user, selectedTicket.getPrice() * 0.1, true);
+            }
 
             boolean success = TicketDAO.deleteTicket(selectedTicket);
 
@@ -137,8 +146,8 @@ public class RezervacijePanel {
                 JOptionPane.showMessageDialog(null, "Not enough money");
                 return;
             }
-            user.setBalance(user.getBalance() - tickets.get(selectedRow).getPrice());
-            UserDAO.changeBalance(user, tickets.get(selectedRow).getPrice());
+            user.setBalance(user.getBalance() - tickets.get(selectedRow).getPrice() * 0.9);
+            UserDAO.changeBalance(user, tickets.get(selectedRow).getPrice(), false);
             balanceLabel.setText("Balance: " + user.getBalance() + "KM");
 
             boolean success = TicketDAO.updateTicketStatus(selectedTicket);

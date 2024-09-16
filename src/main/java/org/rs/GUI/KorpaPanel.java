@@ -39,7 +39,6 @@ public class KorpaPanel {
         korpaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                WindowHandler.create_window_login(oldFrame);
             }
         });
 
@@ -85,7 +84,7 @@ public class KorpaPanel {
                     return;
                 }
                 user.setBalance(user.getBalance() - total);
-                UserDAO.changeBalance(user,total);
+                UserDAO.changeBalance(user,total, false);
                 balanceLabel.setText("Balance: " + user.getBalance() + "KM");
                 TicketDAO.purchaseUserTickets(user);
                 fillTicketTable();
@@ -95,6 +94,12 @@ public class KorpaPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 WindowHandler.create_window_user(oldFrame, user);
+            }
+        });
+        rezervacijeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WindowHandler.create_window_rezervacije(oldFrame, user);
             }
         });
     }
@@ -177,7 +182,7 @@ public class KorpaPanel {
             }
             user.setBalance(user.getBalance() - tickets.get(selectedRow).getPrice());
             // Call the DAO method to update the ticket status in the database
-            UserDAO.changeBalance(user, tickets.get(selectedRow).getPrice());
+            UserDAO.changeBalance(user, tickets.get(selectedRow).getPrice(), false);
             balanceLabel.setText("Balance: " + user.getBalance() + "KM");
             boolean success = TicketDAO.updateTicketStatus(selectedTicket);
 

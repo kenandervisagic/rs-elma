@@ -106,7 +106,7 @@ public class UserDAO {
         }
     }
 
-    public static void changeBalance(User user, double newBalance) {
+    public static void changeBalance(User user, double newBalance, boolean add) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         try {
@@ -116,7 +116,11 @@ public class UserDAO {
             User managedUser = em.find(User.class, user.getId());
             if (managedUser != null) {
                 // Update the balance
-                managedUser.setBalance(user.getBalance() - newBalance);
+                if(add){
+                    managedUser.setBalance(user.getBalance() + newBalance);
+                }else{
+                    managedUser.setBalance(user.getBalance() - newBalance);
+                }
 
                 // Merge changes to the database
                 em.merge(managedUser);

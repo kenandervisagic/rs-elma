@@ -31,6 +31,7 @@ public class EventDetailsPanel {
     private JButton dodajUKorpuButton;
     private JLabel dostupnoLabel;
     private JLabel sektorLabel;
+    private JLabel cancel;
     public User user;
     public Event event;
 
@@ -51,8 +52,10 @@ public class EventDetailsPanel {
         lokacija.setText(event.getLocationEntity().getLocationName());
         opis.setText(event.getDescription());
         vrijeme.setText(event.getEventTime().toString());
-        dostupnoLabel.setText("Dostupno: " + (event.getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(event)));
+        int available = (event.getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(event));
+        dostupnoLabel.setText("Dostupno: " + available);
         cijena.setText((event.getPrice()) + "KM");
+        cancel.setText(!event.isCancelPolicy() ? "Naknada za otkazivanje 10%" : "");
 
 
         if (user != null) {
@@ -83,7 +86,7 @@ public class EventDetailsPanel {
                     }
                     // Set status for reservation (status = 1)
                     user.setBalance(user.getBalance() - ticket.getPrice());
-                    UserDAO.changeBalance(user, ticket.getPrice());
+                    UserDAO.changeBalance(user, ticket.getPrice(), false);
                     TicketDAO.addTicket(ticket, 0);
 
                     JOptionPane.showMessageDialog(null, "Ticket purchased successfully!");
@@ -98,26 +101,19 @@ public class EventDetailsPanel {
                     ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));
                     ticket.setPrice(event.getPrice()); // Example price, can be dynamic
                     ticket.setUser(user);
+                    ticket.setSeatNumber(available);
                     ticket.setPurchaseStartDate(LocalDate.now());
                     ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
                     ticket.setCancellationPolicy(event.isCancelPolicy()); // Example cancellation policy
 
-                    // Set status for reservation (status = 1)
-
-                    int izbor = JOptionPane.showConfirmDialog(null, "Pay reservation fee now with online balance");
-
-                    if (izbor == JOptionPane.YES_OPTION) {
-                        if (user.getBalance() < ticket.getPrice() * 0.1) {
-                            JOptionPane.showMessageDialog(null, "Not enough money");
-                            return;
-                        }
-                        // Set status for reservation (status = 1)
-                        user.setBalance(user.getBalance() - ticket.getPrice() * 0.1);
-                        UserDAO.changeBalance(user, ticket.getPrice() * 0.1);
-                        TicketDAO.addTicket(ticket, 1);
-                    } else {
-                        TicketDAO.addTicket(ticket, 1);
+                    if (user.getBalance() < ticket.getPrice() * 0.1) {
+                        JOptionPane.showMessageDialog(null, "Not enough money");
+                        return;
                     }
+                    // Set status for reservation (status = 1)
+                    user.setBalance(user.getBalance() - ticket.getPrice() * 0.1);
+                    UserDAO.changeBalance(user, ticket.getPrice() * 0.1, false);
+                    TicketDAO.addTicket(ticket, 1);
 
                     JOptionPane.showMessageDialog(null, "Ticket reserved successfully!");
                 }
@@ -135,7 +131,7 @@ public class EventDetailsPanel {
                     ticket.setUser(user);
                     ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
                     ticket.setCancellationPolicy(event.isCancelPolicy()); // Example cancellation policy
-
+                    ticket.setSeatNumber(available);
                     // Set status for reservation (status = 1)
                     TicketDAO.addTicket(ticket, 2);
 
