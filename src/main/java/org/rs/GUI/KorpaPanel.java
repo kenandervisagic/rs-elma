@@ -1,5 +1,6 @@
 package org.rs.GUI;
 
+import org.rs.DAO.EventDAO;
 import org.rs.DAO.TicketDAO;
 import org.rs.DAO.UserDAO;
 import org.rs.entity.Event;
@@ -79,17 +80,46 @@ public class KorpaPanel {
                 double total = tickets.stream()
                         .mapToDouble(Ticket::getPrice) // Extract prices and convert to a stream of doubles
                         .sum(); // Sum the prices
-                if(user.getBalance() < total) {
+
+                // First, check if the user has enough balance
+                if (user.getBalance() < total) {
                     JOptionPane.showMessageDialog(null, "Not enough money");
                     return;
                 }
-                user.setBalance(user.getBalance() - total);
-                UserDAO.changeBalance(user,total, false);
-                balanceLabel.setText("Balance: " + user.getBalance() + "KM");
-                TicketDAO.purchaseUserTickets(user);
-                fillTicketTable();
+
+                boolean allPurchasesSuccessful = true;
+                for (Ticket ticket : tickets) {
+                    int userPurchasedTickets = TicketDAO.getPurchasedUserTicketsForEvent(user, ticket.getEvent());
+                    int maxUserTickets = ticket.getEvent().getMaxTicketsUser();
+
+                    // Check if the user has already purchased the maximum number of tickets for the event
+                    if (userPurchasedTickets >= maxUserTickets) {
+                        JOptionPane.showMessageDialog(null, "You have already purchased the maximum number of tickets for: " + ticket.getEvent().getEventName());
+                        allPurchasesSuccessful = false;
+                        break;
+                    }
+                }
+
+                // If all ticket checks passed, proceed with purchasing
+                if (allPurchasesSuccessful) {
+                    // Deduct total price from user balance
+                    user.setBalance(user.getBalance() - total);
+                    UserDAO.changeBalance(user, total, false);
+                    balanceLabel.setText("Balance: " + user.getBalance() + "KM");
+                    // Purchase each ticket individually
+                    for (Ticket ticket : tickets) {
+                        int sold =  TicketDAO.getSoldEventTicketsNumber(ticket.getEvent());
+                        ticket.setSeatNumber(ticket.getEvent().getMaxTickets() -sold);
+                        purchaseTicket(ticket);
+                    }
+
+//                    TicketDAO.purchaseUserTickets(user); // Optional if you need to update other ticket statuses
+                    fillTicketTable(); // Refresh the ticket table
+                    JOptionPane.showMessageDialog(null, "All tickets purchased successfully!");
+                }
             }
         });
+
         nazadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -179,6 +209,13 @@ public class KorpaPanel {
         if (selectedRow != -1) {
             // Get the ticket corresponding to the selected row
             Ticket selectedTicket = tickets.get(selectedRow);
+            int userPurchasedTickets = TicketDAO.getPurchasedUserTicketsForEvent(user, selectedTicket.getEvent());
+            int maxUserTickets = selectedTicket.getEvent().getMaxTicketsUser();
+
+            if (userPurchasedTickets >= maxUserTickets) {
+                JOptionPane.showMessageDialog(null, "You have already purchased the maximum number of tickets for this event.");
+                return;
+            }
 
             // Set the ticket status to 0 (indicating it has been purchased)
             selectedTicket.setStatus(0);
@@ -202,4 +239,40 @@ public class KorpaPanel {
             JOptionPane.showMessageDialog(null, "Please select a ticket to purchase.");
         }
     }
+    private void purchaseTicket(Ticket ticket) {
+        if (ticket != null) {
+            int userPurchasedTickets = TicketDAO.getPurchasedUserTicketsForEvent(user, ticket.getEvent());
+            int maxUserTickets = ticket.getEvent().getMaxTicketsUser();
+
+            if (userPurchasedTickets >= maxUserTickets) {
+                JOptionPane.showMessageDialog(null, "You have already purchased the maximum number of tickets for this event.");
+                return;
+            }
+
+            // Set the ticket status to 0 (indicating it has been purchased)
+            ticket.setStatus(0);
+            ticket.setSeatNumber(ticket.getEvent().getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(ticket.getEvent()));
+
+            if (user.getBalance() < ticket.getPrice()) {
+                JOptionPane.showMessageDialog(null, "Not enough money");
+                return;
+            }
+
+            user.setBalance(user.getBalance() - ticket.getPrice());
+            UserDAO.changeBalance(user, ticket.getPrice(), false);
+            balanceLabel.setText("Balance: " + user.getBalance() + "KM");
+
+            boolean success = TicketDAO.updateTicketStatus(ticket);
+
+            if (success) {
+                // Refresh the ticket list
+                fillTicketTable();
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to purchase the ticket.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No ticket provided for purchase.");
+        }
+    }
+
 }

@@ -249,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`user_id`, `balance`, `email`, `full_name`, `password`, `role`, `username`) VALUES
     (1, 0, 'elma@admin.com', 'Admin', 'admin', 'Administrator', 'admin'),
     (7, 0, 'elma@org.com', 'Elma Kahvedzic', 'elma', 'Organizator', 'elma'),
-    (8, 2000, 'korisnik@gmail.com', 'Muhammed Ahmetovic', 'muhammed', 'Korisnik', 'muhammed');
+    (8, 3000, 'korisnik@gmail.com', 'Muhammed Ahmetovic', 'muhammed', 'Korisnik', 'muhammed');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

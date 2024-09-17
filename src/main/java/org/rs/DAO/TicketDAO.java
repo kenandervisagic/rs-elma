@@ -7,6 +7,7 @@ import org.rs.entity.User;
 import org.rs.util.JpaUtil;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.rs.util.JpaUtil.getEntityManager;
@@ -38,7 +39,46 @@ public class TicketDAO {
             entityManager.close();
         }
     }
+    public static int getUserTicketsForEvent(User user, Event event) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(t) FROM Ticket t WHERE t.user = :user AND t.event = :event AND t.status IN (0,1)", Long.class);
+            query.setParameter("user", user);
+            query.setParameter("event", event);
+            Long count = query.getSingleResult();
+            return count != null ? count.intValue() : 0;
+        } finally {
+            em.close();
+        }
+    }
+    public static int getPurchasedUserTicketsForEvent(User user, Event event) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(t) FROM Ticket t WHERE t.user = :user AND t.event = :event AND t.status = 0", Long.class);
+            query.setParameter("user", user);
+            query.setParameter("event", event);
+            Long count = query.getSingleResult();
+            return count != null ? count.intValue() : 0;
+        } finally {
+            em.close();
+        }
+    }
 
+    public static int getBasketUserTicketsForEvent(User user, Event event) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                    "SELECT COUNT(t) FROM Ticket t WHERE t.user = :user AND t.event = :event AND t.status = 2", Long.class);
+            query.setParameter("user", user);
+            query.setParameter("event", event);
+            Long count = query.getSingleResult();
+            return count != null ? count.intValue() : 0;
+        } finally {
+            em.close();
+        }
+    }
     public static List<Ticket> getUserTickets(User user, int status) {
         EntityManager entityManager = getEntityManager();
         try {
@@ -125,6 +165,7 @@ public class TicketDAO {
             Ticket managedTicket = em.find(Ticket.class, ticket.getId());
             if (managedTicket != null) {
                 managedTicket.setStatus(ticket.getStatus()); // Update the status
+                managedTicket.setSeatNumber(ticket.getSeatNumber());
                 em.merge(managedTicket);
                 transaction.commit();
                 return true;

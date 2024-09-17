@@ -72,6 +72,15 @@ public class EventDetailsPanel {
             kupiButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
+                    // Check if the user has reached the max number of tickets for this event
+                    int userPurchasedTickets = TicketDAO.getUserTicketsForEvent(user, event);
+                    int maxUserTickets = event.getMaxTicketsUser();
+
+                    if (userPurchasedTickets >= maxUserTickets) {
+                        JOptionPane.showMessageDialog(null, "You have already purchased the maximum number of tickets for this event.");
+                        return;
+                    }
+
                     Ticket ticket = new Ticket();
                     ticket.setEvent(event);
                     ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));
@@ -86,7 +95,7 @@ public class EventDetailsPanel {
                         JOptionPane.showMessageDialog(null, "Not enough money");
                         return;
                     }
-                    // Set status for reservation (status = 1)
+                    // Set status for purchase (status = 0)
                     user.setBalance(user.getBalance() - ticket.getPrice());
                     UserDAO.changeBalance(user, ticket.getPrice(), false);
                     TicketDAO.addTicket(ticket, 0);
@@ -94,13 +103,22 @@ public class EventDetailsPanel {
                     JOptionPane.showMessageDialog(null, "Ticket purchased successfully!");
 
                     available = (event.getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(event));
-
-                    dostupnoLabel.setText("Dostupno: " + available);
+                    dostupnoLabel.setText("Dostupno: " + available + " (Max karti: " + event.getMaxTicketsUser() + ")");
                 }
             });
+
             rezervisiButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    // Check if the user has reached the max number of tickets for this event
+                    int userReservedTickets = TicketDAO.getUserTicketsForEvent(user, event);
+                    int maxUserTickets = event.getMaxTicketsUser();
+
+                    if (userReservedTickets >= maxUserTickets) {
+                        JOptionPane.showMessageDialog(null, "You have already reserved the maximum number of tickets for this event.");
+                        return;
+                    }
+
                     Ticket ticket = new Ticket();
                     ticket.setEvent(event);
                     ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));
@@ -108,7 +126,7 @@ public class EventDetailsPanel {
                     ticket.setUser(user);
                     ticket.setSeatNumber(available);
                     ticket.setPurchaseStartDate(LocalDate.now());
-                    ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
+                    ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example reservation window
                     ticket.setCancellationPolicy(event.isCancelPolicy()); // Example cancellation policy
 
                     if (user.getBalance() < ticket.getPrice() * 0.1) {
@@ -123,15 +141,20 @@ public class EventDetailsPanel {
                     JOptionPane.showMessageDialog(null, "Ticket reserved successfully!");
 
                     available = (event.getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(event));
-
-                    dostupnoLabel.setText("Dostupno: " + available);
+                    dostupnoLabel.setText("Dostupno: " + available + " (Max karti: " + event.getMaxTicketsUser() + ")");
                 }
             });
 
             dodajUKorpuButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    int userBasketTickets = TicketDAO.getBasketUserTicketsForEvent(user,event);
+                    int maxUserTickets = event.getMaxTicketsUser();
 
+                    if (userBasketTickets >= maxUserTickets) {
+                        JOptionPane.showMessageDialog(null, "You have already added to basket the maximum number of tickets for this event.");
+                        return;
+                    }
                     Ticket ticket = new Ticket();
                     ticket.setEvent(event);
                     ticket.setSector(sectors.get(comboBox1.getSelectedIndex()));

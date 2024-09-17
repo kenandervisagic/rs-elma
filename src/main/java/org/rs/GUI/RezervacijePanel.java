@@ -146,7 +146,13 @@ public class RezervacijePanel {
         int selectedRow = table1.getSelectedRow();
         if (selectedRow != -1) {
             Ticket selectedTicket = tickets.get(selectedRow);
+            int userPurchasedTickets = TicketDAO.getPurchasedUserTicketsForEvent(user, selectedTicket.getEvent());
+            int maxUserTickets = selectedTicket.getEvent().getMaxTicketsUser();
 
+            if (userPurchasedTickets >= maxUserTickets) {
+                JOptionPane.showMessageDialog(null, "You have already purchased the maximum number of tickets for this event.");
+                return;
+            }
             selectedTicket.setStatus(0);
             if (user.getBalance() < tickets.get(selectedRow).getPrice()) {
                 JOptionPane.showMessageDialog(null, "Not enough money");
