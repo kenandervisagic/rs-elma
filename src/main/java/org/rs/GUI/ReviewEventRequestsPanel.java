@@ -54,6 +54,7 @@ public class ReviewEventRequestsPanel {
                     EventDAO.approveRequest(selectedRequest);
                     listModel.remove(selectedIndex); // Remove the selected item from the list
                     selectedRequest = null;
+                    requests = EventDAO.getAllEventRequest();
                 }
             }
 
@@ -61,7 +62,7 @@ public class ReviewEventRequestsPanel {
         list1.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                int selectedIndex = list1.getSelectedIndex();
+                 selectedIndex = list1.getSelectedIndex();
                 if (selectedIndex != -1) {
                     selectedRequest = requests.get(selectedIndex);
                 }

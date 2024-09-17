@@ -42,6 +42,7 @@ public class EventInputPanel {
     private JRadioButton dozvoljenoRadioButton;
     private JRadioButton zabranjenoRadioButton;
     private JComboBox comboBox4;
+    private JTextField textField1;
     public JFrame oldFrame;
 
     public User user;
@@ -82,12 +83,17 @@ public class EventInputPanel {
         }
         comboBox4.setModel(model4);
 
+
+        DefaultComboBoxModel<String> modelL = new DefaultComboBoxModel<>();
+        modelL.addElement("");
+        comboBox3.setModel(modelL);
+
         comboBox4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Place selectedPlace = places.get(comboBox4.getSelectedIndex());
+                modelL.removeAllElements();
                 List<Location> availableLocations = LocationDAO.getLocationsForPlace(selectedPlace);
-                DefaultComboBoxModel<String> modelL = new DefaultComboBoxModel<>();
                 for (Location location : availableLocations) {
                     modelL.addElement(location.getLocationName());
                 }
@@ -117,6 +123,7 @@ public class EventInputPanel {
             datum.setText(selectedRequest.getEventDate().format(DATE_FORMATTER));
             vrijeme.setText(selectedRequest.getEventTime().format(TIME_FORMATTER));
             priceField1.setText(String.valueOf(selectedRequest.getPrice()));
+            textField1.setText(String.valueOf(selectedRequest.getMaxTicketsUser()));
 
             if(selectedRequest.isCancelPolicy()){
                 dozvoljenoRadioButton.setSelected(true);
@@ -140,11 +147,11 @@ public class EventInputPanel {
                 comboBox4.setSelectedItem(selectedRequest.getLocationEntity().getPlace().getLocationName());
                 Place selectedPlace = selectedRequest.getLocationEntity().getPlace();
                 List<Location> availableLocations = LocationDAO.getLocationsForPlace(selectedPlace);
-                DefaultComboBoxModel<String> modelL = new DefaultComboBoxModel<>();
+                DefaultComboBoxModel<String> modelL1 = new DefaultComboBoxModel<>();
                 for (Location location : availableLocations) {
-                    modelL.addElement(location.getLocationName());
+                    modelL1.addElement(location.getLocationName());
                 }
-                comboBox3.setModel(modelL);
+                comboBox3.setModel(modelL1);
 
                 comboBox3.setSelectedItem(selectedRequest.getLocationEntity().getLocationName());
             }
@@ -164,6 +171,7 @@ public class EventInputPanel {
                 String selectedLocationName = (String) comboBox3.getSelectedItem();
                 Location location = LocationDAO.getLocationByName(selectedLocationName);
                 String priceText = priceField1.getText();
+                int maxKartiUser = Integer.parseInt(textField1.getText());
 
 
                 if (eventName == null || eventName.trim().isEmpty()) {
@@ -247,6 +255,7 @@ public class EventInputPanel {
                     event.setSubCategory(subCategory1);
                     event.setLocationEntity(location);
                     event.setOrganizer(user);
+                    event.setMaxTicketsUser(maxKartiUser);
                     event.setPrice(Double.parseDouble(priceField1.getText()));
                     event.setCancelPolicy(!dozvoljenoRadioButton.isSelected());
                     event.setSectors(checkedSectors);
@@ -275,6 +284,7 @@ public class EventInputPanel {
                     selectedRequest.setCancelPolicy(dozvoljenoRadioButton.isSelected());
                     selectedRequest.setPrice(Double.parseDouble(priceField1.getText()));
                     selectedRequest.setSectors(checkedSectors);
+                    selectedRequest.setMaxTicketsUser(maxKartiUser);
 
                     // Update the event in the database
                     boolean success = EventDAO.updateEventRequest(selectedRequest);

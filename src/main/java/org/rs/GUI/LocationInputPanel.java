@@ -95,6 +95,7 @@ public class LocationInputPanel {
                 lokacija.setText("");
                 nazivSektora.setText("");
                 kapacitetSektora.setText("");
+                kapacitet.setText("");
                 sectorListModel.clear();  // Clear the sector list display
                 comboBox1.setSelectedIndex(-1); // Clear the selection
                 sectors.clear(); // Clear the sectors set

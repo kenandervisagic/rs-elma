@@ -34,6 +34,7 @@ public class EventDetailsPanel {
     private JLabel cancel;
     public User user;
     public Event event;
+    private int available;
 
     public EventDetailsPanel(JFrame oldFrame, User user, Event event) {
 
@@ -52,8 +53,8 @@ public class EventDetailsPanel {
         lokacija.setText(event.getLocationEntity().getLocationName());
         opis.setText(event.getDescription());
         vrijeme.setText(event.getEventTime().toString());
-        int available = (event.getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(event));
-        dostupnoLabel.setText("Dostupno: " + available);
+        available = (event.getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(event));
+        dostupnoLabel.setText("Dostupno: " + available + " (Max karti: " + event.getMaxTicketsUser() + ")");
         cijena.setText((event.getPrice()) + "KM");
         cancel.setText(!event.isCancelPolicy() ? "Naknada za otkazivanje 10%" : "");
 
@@ -79,6 +80,7 @@ public class EventDetailsPanel {
                     ticket.setPurchaseStartDate(LocalDate.now());
                     ticket.setPurchaseEndDate(LocalDate.now().plusDays(30)); // Example purchase window
                     ticket.setCancellationPolicy(event.isCancelPolicy()); // Example cancellation policy
+                    ticket.setSeatNumber(available);
 
                     if (user.getBalance() < ticket.getPrice()) {
                         JOptionPane.showMessageDialog(null, "Not enough money");
@@ -91,6 +93,9 @@ public class EventDetailsPanel {
 
                     JOptionPane.showMessageDialog(null, "Ticket purchased successfully!");
 
+                    available = (event.getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(event));
+
+                    dostupnoLabel.setText("Dostupno: " + available);
                 }
             });
             rezervisiButton.addActionListener(new ActionListener() {
@@ -116,6 +121,10 @@ public class EventDetailsPanel {
                     TicketDAO.addTicket(ticket, 1);
 
                     JOptionPane.showMessageDialog(null, "Ticket reserved successfully!");
+
+                    available = (event.getMaxTickets() - TicketDAO.getSoldEventTicketsNumber(event));
+
+                    dostupnoLabel.setText("Dostupno: " + available);
                 }
             });
 

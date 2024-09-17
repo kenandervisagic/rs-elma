@@ -43,6 +43,9 @@ public class Event {
     @Column(name = "max_tickets", nullable = false)
     private Integer maxTickets;
 
+    @Column(name = "max_tickets_user", nullable = false)
+    private Integer maxTicketsUser;
+
     @Column(name ="ticket_price", nullable = false)
     private double price;
 
