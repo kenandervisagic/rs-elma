@@ -18,9 +18,9 @@
         <properties>
             <!-- Database connection settings -->
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3305/ticket_reservation"/>
-            <property name="javax.persistence.jdbc.user" value="root"/>
-            <property name="javax.persistence.jdbc.password" value="keno"/>
+           <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3305/ticket_reservation"/> <!-- change this (check your mysql port)-->
+            <property name="javax.persistence.jdbc.user" value="root"/> <!-- change this-->
+            <property name="javax.persistence.jdbc.password" value="keno"/> <!-- change this-->
 
             <!-- Hibernate settings -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
